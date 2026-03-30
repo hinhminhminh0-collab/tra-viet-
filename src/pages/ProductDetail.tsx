@@ -127,16 +127,16 @@ export default function ProductDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fcfbf7]">
+    <div className="min-h-screen bg-tea-light">
       <Header />
 
       {/* Breadcrumbs */}
       <nav className="pt-28 pb-6 px-6 max-w-7xl mx-auto flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400">
-        <Link to="/" className="hover:text-[#1f3d2b] transition-colors">Trang chủ</Link>
+        <Link to="/" className="hover:text-tea-primary transition-colors">Trang chủ</Link>
         <ChevronRight size={12} />
-        <Link to="/shop" className="hover:text-[#1f3d2b] transition-colors">Cửa hàng</Link>
+        <Link to="/shop" className="hover:text-tea-primary transition-colors">Cửa hàng</Link>
         <ChevronRight size={12} />
-        <span className="text-[#1f3d2b]">{product.name}</span>
+        <span className="text-tea-dark/60">{product.name}</span>
       </nav>
 
       <section className="py-12 px-6 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
@@ -161,7 +161,7 @@ export default function ProductDetail() {
                 onClick={() => setActiveImage(i)}
                 className={cn(
                   "w-24 aspect-square rounded-xl overflow-hidden border-2 transition-all shrink-0",
-                  activeImage === i ? "border-[#1f3d2b] scale-105" : "border-transparent opacity-60 hover:opacity-100"
+                  activeImage === i ? "border-tea-primary scale-105" : "border-transparent opacity-60 hover:opacity-100"
                 )}
               >
                 <img src={img} alt={`${product.name} ${i}`} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
@@ -174,16 +174,16 @@ export default function ProductDetail() {
         <div className="space-y-8">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-[#1f3d2b] uppercase tracking-[0.2em] bg-[#1f3d2b]/5 px-3 py-1 rounded-full">
+              <span className="text-xs font-bold text-tea-primary uppercase tracking-[0.2em] bg-tea-primary/10 px-3 py-1 rounded-full">
                 {product.category}
               </span>
               <div className="flex items-center gap-4">
                 <button className="text-gray-400 hover:text-red-500 transition-colors"><Heart size={20} /></button>
-                <button className="text-gray-400 hover:text-[#1f3d2b] transition-colors"><Share2 size={20} /></button>
+                <button className="text-gray-400 hover:text-tea-primary transition-colors"><Share2 size={20} /></button>
               </div>
             </div>
             
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#1f3d2b] leading-tight">
+            <h1 className="text-4xl md:text-5xl font-serif font-bold text-tea-dark leading-tight">
               {product.name}
             </h1>
             
@@ -216,12 +216,12 @@ export default function ProductDetail() {
                         }
                       }
                     }}
-                    className="w-48 bg-white border border-[#1f3d2b]/20 rounded-xl px-4 py-2 text-3xl font-bold text-[#1f3d2b] focus:border-[#1f3d2b] focus:outline-none transition-all"
+                    className="w-48 bg-white border border-tea-primary/30 rounded-xl px-4 py-2 text-3xl font-bold text-tea-primary focus:border-tea-primary focus:ring-2 focus:ring-tea-primary/20 focus:outline-none transition-all"
                   />
                   <span className="text-sm font-bold text-gray-400 uppercase tracking-widest">VNĐ</span>
                 </div>
               ) : (
-                <div className="text-3xl font-bold text-[#1f3d2b]">
+                <div className="text-3xl font-bold text-tea-primary">
                   {formatPrice(product.price)}
                 </div>
               )}
@@ -230,17 +230,17 @@ export default function ProductDetail() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-gray-100 shadow-sm">
-              <MapPin className="text-[#1f3d2b]" size={20} />
+              <MapPin className="text-tea-primary" size={20} />
               <div>
                 <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Xuất xứ</p>
-                <p className="text-sm font-bold text-[#1f3d2b]">{product.origin}</p>
+                <p className="text-sm font-bold text-tea-dark">{product.origin}</p>
               </div>
             </div>
             <div className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-gray-100 shadow-sm">
-              <Leaf className="text-[#1f3d2b]" size={20} />
+              <Leaf className="text-tea-primary" size={20} />
               <div>
                 <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Hương vị</p>
-                <p className="text-sm font-bold text-[#1f3d2b]">{product.taste?.split(',')[0] || 'Đang cập nhật'}</p>
+                <p className="text-sm font-bold text-tea-dark">{product.taste?.split(',')[0] || 'Đang cập nhật'}</p>
               </div>
             </div>
           </div>
@@ -250,14 +250,14 @@ export default function ProductDetail() {
               <div className="flex items-center border border-gray-200 rounded-full p-1 bg-white">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="p-2 hover:bg-gray-50 rounded-full transition-colors text-[#1f3d2b]"
+                  className="p-2 hover:bg-gray-50 rounded-full transition-colors text-tea-dark"
                 >
                   <Minus size={18} />
                 </button>
-                <span className="w-12 text-center font-bold text-[#1f3d2b]">{quantity}</span>
+                <span className="w-12 text-center font-bold text-tea-dark">{quantity}</span>
                 <button
                   onClick={() => setQuantity(quantity + 1)}
-                  className="p-2 hover:bg-gray-50 rounded-full transition-colors text-[#1f3d2b]"
+                  className="p-2 hover:bg-gray-50 rounded-full transition-colors text-tea-dark"
                 >
                   <Plus size={18} />
                 </button>
@@ -270,14 +270,14 @@ export default function ProductDetail() {
             <div className="flex flex-col sm:flex-row gap-4">
               <button
                 onClick={handleAddToCart}
-                className="flex-1 bg-[#1f3d2b] text-white py-4 rounded-full font-bold uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-opacity-90 transition-all shadow-xl shadow-[#1f3d2b]/20"
+                className="flex-1 bg-tea-primary text-white py-4 rounded-full font-bold uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-opacity-90 transition-all shadow-xl shadow-tea-primary/20"
               >
                 <ShoppingCart size={20} />
                 Thêm vào giỏ hàng
               </button>
               <button 
                 onClick={handleBuyNow}
-                className="flex-1 bg-white text-[#1f3d2b] border-2 border-[#1f3d2b] py-4 rounded-full font-bold uppercase tracking-widest hover:bg-[#1f3d2b] hover:text-white transition-all"
+                className="flex-1 bg-white text-tea-dark border-2 border-tea-dark py-4 rounded-full font-bold uppercase tracking-widest hover:bg-tea-dark hover:text-white transition-all"
               >
                 Mua ngay
               </button>
@@ -292,12 +292,12 @@ export default function ProductDetail() {
                   onClick={() => setActiveTab(tab)}
                   className={cn(
                     "pb-4 text-xs font-bold uppercase tracking-widest transition-all relative",
-                    activeTab === tab ? "text-[#1f3d2b]" : "text-gray-400 hover:text-gray-600"
+                    activeTab === tab ? "text-tea-primary" : "text-gray-400 hover:text-tea-dark"
                   )}
                 >
                   {tab === 'description' ? 'Mô tả' : tab === 'brewing' ? 'Cách pha' : 'Đánh giá'}
                   {activeTab === tab && (
-                    <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#1f3d2b]" />
+                    <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-tea-primary" />
                   )}
                 </button>
               ))}
@@ -316,15 +316,15 @@ export default function ProductDetail() {
                     <p>{product.description}</p>
                     <ul className="space-y-2">
                       <li className="flex items-center gap-2 text-sm">
-                        <CheckCircle2 size={16} className="text-[#1f3d2b]" />
+                        <CheckCircle2 size={16} className="text-tea-primary" />
                         <span>100% trà sạch tự nhiên, không hóa chất</span>
                       </li>
                       <li className="flex items-center gap-2 text-sm">
-                        <CheckCircle2 size={16} className="text-[#1f3d2b]" />
+                        <CheckCircle2 size={16} className="text-tea-primary" />
                         <span>Thu hái thủ công từ cây trà cổ thụ</span>
                       </li>
                       <li className="flex items-center gap-2 text-sm">
-                        <CheckCircle2 size={16} className="text-[#1f3d2b]" />
+                        <CheckCircle2 size={16} className="text-tea-primary" />
                         <span>Đóng gói hút chân không bảo quản hương vị</span>
                       </li>
                     </ul>
@@ -341,19 +341,19 @@ export default function ProductDetail() {
                   >
                     <div className="grid grid-cols-3 gap-4">
                       <div className="text-center p-4 rounded-2xl bg-white border border-gray-100">
-                        <Thermometer className="mx-auto text-[#1f3d2b] mb-2" size={24} />
+                        <Thermometer className="mx-auto text-tea-primary mb-2" size={24} />
                         <p className="text-[10px] font-bold text-gray-400 uppercase">Nhiệt độ</p>
-                        <p className="text-sm font-bold text-[#1f3d2b]">{product.brewingGuide?.match(/\d+ độ C/)?.[0] || '90°C'}</p>
+                        <p className="text-sm font-bold text-tea-dark">{product.brewingGuide?.match(/\d+ độ C/)?.[0] || '90°C'}</p>
                       </div>
                       <div className="text-center p-4 rounded-2xl bg-white border border-gray-100">
-                        <Clock className="mx-auto text-[#1f3d2b] mb-2" size={24} />
+                        <Clock className="mx-auto text-tea-primary mb-2" size={24} />
                         <p className="text-[10px] font-bold text-gray-400 uppercase">Thời gian</p>
-                        <p className="text-sm font-bold text-[#1f3d2b]">30-60s</p>
+                        <p className="text-sm font-bold text-tea-dark">30-60s</p>
                       </div>
                       <div className="text-center p-4 rounded-2xl bg-white border border-gray-100">
-                        <Leaf className="mx-auto text-[#1f3d2b] mb-2" size={24} />
+                        <Leaf className="mx-auto text-tea-primary mb-2" size={24} />
                         <p className="text-[10px] font-bold text-gray-400 uppercase">Lượng trà</p>
-                        <p className="text-sm font-bold text-[#1f3d2b]">5g / 200ml</p>
+                        <p className="text-sm font-bold text-tea-dark">5g / 200ml</p>
                       </div>
                     </div>
                     <p className="text-gray-600 leading-relaxed italic">
@@ -373,7 +373,7 @@ export default function ProductDetail() {
                     {[1, 2].map(i => (
                       <div key={i} className="space-y-2 border-b border-gray-50 pb-4">
                         <div className="flex items-center justify-between">
-                          <p className="font-bold text-[#1f3d2b]">Nguyễn Văn A</p>
+                          <p className="font-bold text-tea-dark">Nguyễn Văn A</p>
                           <div className="flex text-yellow-500">
                             {[...Array(5)].map((_, j) => <Star key={j} size={12} fill="currentColor" />)}
                           </div>
@@ -382,7 +382,7 @@ export default function ProductDetail() {
                         <p className="text-[10px] text-gray-400">20/03/2026</p>
                       </div>
                     ))}
-                    <button className="text-xs font-bold text-[#1f3d2b] uppercase tracking-widest hover:opacity-70">
+                    <button className="text-xs font-bold text-tea-dark uppercase tracking-widest hover:opacity-70">
                       Xem tất cả đánh giá
                     </button>
                   </motion.div>
@@ -397,8 +397,8 @@ export default function ProductDetail() {
       <section className="py-24 px-6 bg-white">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="flex items-center justify-between">
-            <h2 className="text-3xl font-serif font-bold text-[#1f3d2b]">Sản phẩm tương tự</h2>
-            <Link to="/shop" className="text-sm font-bold text-[#1f3d2b] flex items-center gap-2">
+            <h2 className="text-3xl font-serif font-bold text-tea-dark">Sản phẩm tương tự</h2>
+            <Link to="/shop" className="text-sm font-bold text-tea-primary flex items-center gap-2 hover:opacity-70 transition-opacity">
               Xem tất cả <ChevronRight size={16} />
             </Link>
           </div>

@@ -72,7 +72,7 @@ export default function Header() {
           <Link to="/" className="flex items-center gap-2">
             <span className={cn(
               "text-2xl font-serif font-bold tracking-tight",
-              isScrolled ? "text-[#1f3d2b]" : "text-white"
+              isScrolled ? "text-tea-primary" : "text-white"
             )}>
               TRÀ VIỆT
             </span>
@@ -92,7 +92,7 @@ export default function Header() {
               className={cn(
                 "text-sm font-medium transition-colors hover:opacity-70",
                 location.pathname === link.path ? "opacity-100" : "opacity-60",
-                isScrolled ? "text-[#1f3d2b]" : "text-white"
+                isScrolled ? "text-tea-primary" : "text-white"
               )}
             >
               {link.name}
@@ -105,7 +105,7 @@ export default function Header() {
           <div className={cn(
             "text-[10px] font-mono font-bold tracking-widest px-3 py-1 rounded-full border transition-all duration-300 flex items-center gap-2",
             isScrolled 
-              ? "text-[#1f3d2b] border-[#1f3d2b]/10 bg-[#1f3d2b]/5" 
+              ? "text-tea-primary border-tea-primary/10 bg-tea-primary/5" 
               : "text-white border-white/20 bg-white/10 backdrop-blur-sm"
           )}>
             <span className="opacity-50">{currentTime.toLocaleDateString('vi-VN')}</span>
@@ -114,27 +114,27 @@ export default function Header() {
           </div>
           <button 
             onClick={() => setIsSearchOpen(true)}
-            className={cn("hover:opacity-70 transition-opacity", isScrolled ? "text-[#1f3d2b]" : "text-white")}
+            className={cn("hover:opacity-70 transition-opacity", isScrolled ? "text-tea-primary" : "text-white")}
           >
             <Search size={20} />
           </button>
-          <Link to="/wishlist" className={cn("hover:opacity-70 transition-opacity", isScrolled ? "text-[#1f3d2b]" : "text-white")}>
+          <Link to="/wishlist" className={cn("hover:opacity-70 transition-opacity", isScrolled ? "text-tea-primary" : "text-white")}>
             <Heart size={20} />
           </Link>
-          <Link to="/cart" className={cn("relative hover:opacity-70 transition-opacity", isScrolled ? "text-[#1f3d2b]" : "text-white")}>
+          <Link to="/cart" className={cn("relative hover:opacity-70 transition-opacity", isScrolled ? "text-tea-primary" : "text-white")}>
             <ShoppingCart size={20} />
             {totalItems > 0 && (
-              <span className="absolute -top-2 -right-2 bg-[#1f3d2b] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center border border-white">
+              <span className="absolute -top-2 -right-2 bg-tea-primary text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center border border-white">
                 {totalItems}
               </span>
             )}
           </Link>
           {isAdmin && (
-            <Link to="/admin/orders" className={cn("hover:opacity-70 transition-opacity", isScrolled ? "text-[#1f3d2b]" : "text-white")}>
+            <Link to="/admin/orders" className={cn("hover:opacity-70 transition-opacity", isScrolled ? "text-tea-primary" : "text-white")}>
               <Package size={20} />
             </Link>
           )}
-          <Link to={user ? "/profile" : "/auth"} className={cn("hover:opacity-70 transition-opacity", isScrolled ? "text-[#1f3d2b]" : "text-white")}>
+          <Link to={user ? "/profile" : "/auth"} className={cn("hover:opacity-70 transition-opacity", isScrolled ? "text-tea-primary" : "text-white")}>
             <User size={20} />
           </Link>
         </div>
@@ -144,7 +144,7 @@ export default function Header() {
           className="md:hidden text-white"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         >
-          {isMenuOpen ? <X size={24} className={isScrolled ? "text-[#1f3d2b]" : "text-white"} /> : <Menu size={24} className={isScrolled ? "text-[#1f3d2b]" : "text-white"} />}
+          {isMenuOpen ? <X size={24} className={isScrolled ? "text-tea-primary" : "text-white"} /> : <Menu size={24} className={isScrolled ? "text-tea-primary" : "text-white"} />}
         </button>
       </div>
 
@@ -157,7 +157,7 @@ export default function Header() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsSearchOpen(false)}
-              className="absolute inset-0 bg-[#1f3d2b]/95 backdrop-blur-md"
+              className="absolute inset-0 bg-tea-primary/95 backdrop-blur-md"
             />
             <motion.div
               initial={{ opacity: 0, y: -50 }}
@@ -223,30 +223,30 @@ export default function Header() {
                 key={link.path}
                 to={link.path}
                 onClick={() => setIsMenuOpen(false)}
-                className="text-lg font-medium text-[#1f3d2b] border-b border-gray-100 pb-2"
+                className="text-lg font-medium text-tea-dark border-b border-gray-100 pb-2"
               >
                 {link.name}
               </Link>
             ))}
             <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-              <div className="text-[10px] font-mono font-bold tracking-widest px-3 py-1 rounded-full border border-[#1f3d2b]/10 bg-[#1f3d2b]/5 text-[#1f3d2b] flex items-center gap-2">
+              <div className="text-[10px] font-mono font-bold tracking-widest px-3 py-1 rounded-full border border-tea-primary/10 bg-tea-primary/5 text-tea-primary flex items-center gap-2">
                 <span className="opacity-50">{currentTime.toLocaleDateString('vi-VN')}</span>
                 <span className="w-px h-2 bg-current opacity-20" />
                 {currentTime.toLocaleTimeString('vi-VN', { hour12: false })}
               </div>
               <div className="flex items-center gap-6">
-                <Link to="/cart" onClick={() => setIsMenuOpen(false)} className="text-[#1f3d2b]">
+                <Link to="/cart" onClick={() => setIsMenuOpen(false)} className="text-tea-primary">
                   <ShoppingCart size={24} />
                 </Link>
-                <Link to="/wishlist" onClick={() => setIsMenuOpen(false)} className="text-[#1f3d2b]">
+                <Link to="/wishlist" onClick={() => setIsMenuOpen(false)} className="text-tea-primary">
                   <Heart size={24} />
                 </Link>
                 {isAdmin && (
-                  <Link to="/admin/orders" onClick={() => setIsMenuOpen(false)} className="text-[#1f3d2b]">
+                  <Link to="/admin/orders" onClick={() => setIsMenuOpen(false)} className="text-tea-primary">
                     <Package size={24} />
                   </Link>
                 )}
-                <Link to={user ? "/profile" : "/auth"} onClick={() => setIsMenuOpen(false)} className="text-[#1f3d2b]">
+                <Link to={user ? "/profile" : "/auth"} onClick={() => setIsMenuOpen(false)} className="text-tea-primary">
                   <User size={24} />
                 </Link>
               </div>
@@ -261,8 +261,8 @@ export default function Header() {
                     className={cn(
                       "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest transition-colors",
                       i18n.language === lang 
-                        ? "bg-[#1f3d2b] text-white" 
-                        : "bg-[#1f3d2b]/5 text-[#1f3d2b]"
+                        ? "bg-tea-primary text-white" 
+                        : "bg-tea-primary/5 text-tea-primary"
                     )}
                   >
                     {lang}
@@ -281,7 +281,7 @@ export default function Header() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.5 }}
             onClick={scrollToTop}
-            className="fixed bottom-2 right-4 z-50 bg-[#1f3d2b] text-white p-4 rounded-full shadow-2xl hover:bg-black transition-all"
+            className="fixed bottom-2 right-4 z-50 bg-tea-primary text-white p-4 rounded-full shadow-2xl hover:bg-black transition-all"
           >
             <ArrowUp size={24} />
           </motion.button>

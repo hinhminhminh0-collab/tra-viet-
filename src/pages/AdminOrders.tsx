@@ -138,13 +138,13 @@ export default function AdminOrders() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fcfbf7]">
+    <div className="min-h-screen bg-tea-light">
       <Header />
       
       <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto space-y-12">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <h1 className="text-3xl font-serif font-bold text-[#1f3d2b]">Quản lý đơn hàng</h1>
+            <h1 className="text-3xl font-serif font-bold text-tea-dark">Quản lý đơn hàng</h1>
             <p className="text-sm text-gray-500">Xem và cập nhật trạng thái đơn hàng của khách hàng.</p>
           </div>
         </div>
@@ -160,17 +160,17 @@ export default function AdminOrders() {
                   onClick={() => setSelectedOrder(order)}
                   className={cn(
                     "bg-white p-4 rounded-2xl border transition-all cursor-pointer hover:shadow-md",
-                    selectedOrder?.id === order.id ? "border-[#1f3d2b] shadow-sm" : "border-gray-100"
+                    selectedOrder?.id === order.id ? "border-tea-primary shadow-sm" : "border-gray-100"
                   )}
                 >
                   <div className="flex items-center justify-between gap-4 mb-3">
                     <div className="flex items-center gap-2">
-                      <div className="p-1.5 bg-gray-50 rounded-lg text-[#1f3d2b]">
+                      <div className="p-1.5 bg-gray-50 rounded-lg text-tea-primary">
                         <Package size={16} />
                       </div>
                       <div>
                         <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Mã đơn</p>
-                        <p className="text-xs font-bold text-[#1f3d2b]">#{order.id.slice(-6).toUpperCase()}</p>
+                        <p className="text-xs font-bold text-tea-dark">#{order.id.slice(-6).toUpperCase()}</p>
                       </div>
                     </div>
                     <span className={cn("px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest", getStatusColor(order.status))}>
@@ -181,21 +181,21 @@ export default function AdminOrders() {
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
                       <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Khách hàng</p>
-                      <p className="text-xs font-bold text-[#1f3d2b] truncate">{order.customerInfo.fullName}</p>
+                      <p className="text-xs font-bold text-tea-dark truncate">{order.customerInfo.fullName}</p>
                     </div>
                     <div>
                       <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Ngày đặt</p>
-                      <p className="text-xs font-bold text-[#1f3d2b]">
+                      <p className="text-xs font-bold text-tea-dark">
                         {order.createdAt?.toDate().toLocaleDateString('vi-VN')}
                       </p>
                     </div>
                     <div>
                       <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Sản phẩm</p>
-                      <p className="text-xs font-bold text-[#1f3d2b]">{order.items.length} món</p>
+                      <p className="text-xs font-bold text-tea-dark">{order.items.length} món</p>
                     </div>
                     <div className="text-right">
                       <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Tổng tiền</p>
-                      <p className="text-xs font-bold text-[#1f3d2b]">{formatPrice(order.totalAmount)}</p>
+                      <p className="text-xs font-bold text-tea-dark">{formatPrice(order.totalAmount)}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -211,7 +211,7 @@ export default function AdminOrders() {
           <div className="lg:col-span-1 space-y-6">
             {/* Filters Sidebar */}
             <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-6">
-              <h3 className="text-xs font-bold text-[#1f3d2b] uppercase tracking-widest border-b border-gray-50 pb-3 flex items-center gap-2">
+              <h3 className="text-xs font-bold text-tea-dark uppercase tracking-widest border-b border-gray-50 pb-3 flex items-center gap-2">
                 <Filter size={14} /> Bộ lọc & Tìm kiếm
               </h3>
               
@@ -225,7 +225,7 @@ export default function AdminOrders() {
                       placeholder="Tên, SĐT, mã đơn..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs focus:outline-none focus:border-[#1f3d2b] w-full"
+                      className="pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs focus:outline-none focus:border-tea-primary w-full"
                     />
                   </div>
                 </div>
@@ -236,7 +236,7 @@ export default function AdminOrders() {
                     <select 
                       value={statusFilter}
                       onChange={(e) => setStatusFilter(e.target.value)}
-                      className="appearance-none w-full pl-4 pr-10 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-[#1f3d2b] focus:outline-none focus:border-[#1f3d2b] cursor-pointer"
+                      className="appearance-none w-full pl-4 pr-10 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-tea-dark focus:outline-none focus:border-tea-primary cursor-pointer"
                     >
                       <option value="all">Tất cả trạng thái</option>
                       <option value="pending">Chờ xử lý</option>
@@ -245,7 +245,7 @@ export default function AdminOrders() {
                       <option value="completed">Đã hoàn thành</option>
                       <option value="cancelled">Đã hủy</option>
                     </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-[#1f3d2b] pointer-events-none" size={14} />
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-tea-dark pointer-events-none" size={14} />
                   </div>
                 </div>
               </div>
@@ -262,7 +262,7 @@ export default function AdminOrders() {
                   className="bg-white p-6 rounded-3xl shadow-xl border border-gray-100 space-y-6"
                 >
                   <div className="flex items-center justify-between border-b border-gray-50 pb-4">
-                    <h2 className="text-lg font-serif font-bold text-[#1f3d2b]">Chi tiết</h2>
+                    <h2 className="text-lg font-serif font-bold text-tea-dark">Chi tiết</h2>
                     <button onClick={() => setSelectedOrder(null)} className="text-gray-400 hover:text-red-500">
                       <XCircle size={18} />
                     </button>
@@ -270,12 +270,12 @@ export default function AdminOrders() {
 
                   <div className="space-y-5">
                     <div className="space-y-3">
-                      <div className="flex items-center gap-2 text-[#1f3d2b]">
+                      <div className="flex items-center gap-2 text-tea-primary">
                         <User size={14} />
                         <h3 className="font-bold uppercase tracking-widest text-[9px]">Khách hàng</h3>
                       </div>
                       <div className="pl-6 space-y-1">
-                        <p className="text-xs font-bold text-[#1f3d2b]">{selectedOrder.customerInfo.fullName}</p>
+                        <p className="text-xs font-bold text-tea-dark">{selectedOrder.customerInfo.fullName}</p>
                         <p className="text-[10px] text-gray-500">{selectedOrder.customerInfo.phone}</p>
                         <p className="text-[10px] text-gray-500 truncate">{selectedOrder.customerInfo.email}</p>
                         <p className="text-[10px] text-gray-500 leading-relaxed">{selectedOrder.customerInfo.address}</p>
@@ -283,7 +283,7 @@ export default function AdminOrders() {
                     </div>
 
                     <div className="space-y-3">
-                      <div className="flex items-center gap-2 text-[#1f3d2b]">
+                      <div className="flex items-center gap-2 text-tea-primary">
                         <Package size={14} />
                         <h3 className="font-bold uppercase tracking-widest text-[9px]">Sản phẩm</h3>
                       </div>
@@ -292,7 +292,7 @@ export default function AdminOrders() {
                           <div key={idx} className="flex gap-2">
                             <img src={item.image} alt={item.name} className="w-8 h-8 rounded-lg object-cover" />
                             <div className="flex-1 min-w-0">
-                              <p className="text-[10px] font-bold text-[#1f3d2b] truncate">{item.name}</p>
+                              <p className="text-[10px] font-bold text-tea-dark truncate">{item.name}</p>
                               <p className="text-[9px] text-gray-400">{item.quantity} x {formatPrice(item.price)}</p>
                             </div>
                           </div>
@@ -301,14 +301,14 @@ export default function AdminOrders() {
                     </div>
 
                     <div className="space-y-3 pt-3 border-t border-gray-50">
-                      <div className="flex items-center gap-2 text-[#1f3d2b]">
+                      <div className="flex items-center gap-2 text-tea-primary">
                         <CreditCard size={14} />
                         <h3 className="font-bold uppercase tracking-widest text-[9px]">Thanh toán</h3>
                       </div>
                       <div className="pl-6 space-y-3">
                         <div className="flex justify-between text-[10px]">
                           <span className="text-gray-400">Tổng cộng:</span>
-                          <span className="font-bold text-[#1f3d2b]">{formatPrice(selectedOrder.totalAmount)}</span>
+                          <span className="font-bold text-tea-dark">{formatPrice(selectedOrder.totalAmount)}</span>
                         </div>
                         
                         <div className="space-y-2">
@@ -335,7 +335,7 @@ export default function AdminOrders() {
                   </div>
                 </motion.div>
               ) : (
-                <div className="bg-[#f5f2ed] p-8 rounded-3xl text-center space-y-3 border border-dashed border-gray-200">
+                <div className="bg-tea-light p-8 rounded-3xl text-center space-y-3 border border-dashed border-gray-200">
                   <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto text-gray-300">
                     <ExternalLink size={20} />
                   </div>

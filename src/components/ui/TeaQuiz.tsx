@@ -63,10 +63,10 @@ export default function TeaQuiz() {
   };
 
   return (
-    <div className="relative overflow-hidden bg-[#1f3d2b] rounded-[40px] p-8 md:p-16 shadow-2xl">
+    <div className="relative overflow-hidden bg-tea-dark rounded-[40px] p-8 md:p-16 shadow-2xl">
       {/* Background Elements */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-orange-200/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-tea-accent/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
       
       <div className="relative z-10 max-w-2xl mx-auto text-center space-y-12">
         <AnimatePresence mode="wait">
@@ -80,7 +80,7 @@ export default function TeaQuiz() {
             >
               <div className="space-y-4">
                 <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest border border-white/10">
-                  <Sparkles size={14} className="text-orange-300" />
+                  <Sparkles size={14} className="text-tea-accent" />
                   AI Trà Sư
                 </div>
                 <h2 className="text-4xl md:text-5xl font-serif font-bold text-white leading-tight">
@@ -116,11 +116,11 @@ export default function TeaQuiz() {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: i * 0.1 }}
                         onClick={() => handleAnswer(option)}
-                        className="group relative p-6 rounded-2xl border border-white/10 bg-white/5 text-white hover:bg-white hover:text-[#1f3d2b] transition-all duration-500 text-left overflow-hidden"
+                        className="group relative p-6 rounded-2xl border border-white/10 bg-white/5 text-white hover:bg-white hover:text-tea-dark transition-all duration-500 text-left overflow-hidden"
                       >
                         <div className="relative z-10 flex items-center justify-between">
                           <span className="font-medium">{option}</span>
-                          <div className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center group-hover:border-[#1f3d2b]/20">
+                          <div className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center group-hover:border-tea-dark/20">
                             <Check size={14} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                           </div>
                         </div>
@@ -185,7 +185,7 @@ export default function TeaQuiz() {
                   <RefreshCw size={16} />
                   Làm lại Quiz
                 </button>
-                <button className="bg-white text-[#1f3d2b] px-12 py-5 rounded-full font-bold uppercase tracking-widest flex items-center gap-3 hover:bg-orange-50 transition-all shadow-2xl shadow-white/10">
+                <button className="bg-white text-tea-dark px-12 py-5 rounded-full font-bold uppercase tracking-widest flex items-center gap-3 hover:bg-tea-bg transition-all shadow-2xl shadow-white/10">
                   Khám phá ngay <ArrowRight size={20} />
                 </button>
               </div>

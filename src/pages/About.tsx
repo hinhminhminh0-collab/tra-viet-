@@ -5,16 +5,16 @@ import Footer from '../components/layout/Footer';
 
 export default function About() {
   return (
-    <div className="min-h-screen bg-[#fcfbf7]">
+    <div className="min-h-screen bg-tea-bg">
       <Header />
 
       {/* Hero */}
-      <section className="pt-40 pb-24 px-6 bg-[#f5f2ed]">
+      <section className="pt-40 pb-24 px-6 bg-tea-bg/50">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           <div className="space-y-8">
             <div className="space-y-4">
-              <span className="text-xs font-bold text-[#1f3d2b] uppercase tracking-widest">Câu chuyện thương hiệu</span>
-              <h1 className="text-5xl md:text-7xl font-serif font-bold text-[#1f3d2b] leading-tight">
+              <span className="text-xs font-bold text-tea-primary uppercase tracking-widest">Câu chuyện thương hiệu</span>
+              <h1 className="text-5xl md:text-7xl font-serif font-bold text-tea-primary leading-tight">
                 Lan tỏa tinh hoa <br /> Trà Việt
               </h1>
             </div>
@@ -23,17 +23,17 @@ export default function About() {
             </p>
             <div className="flex items-center gap-8 pt-4">
               <div>
-                <p className="text-4xl font-serif font-bold text-[#1f3d2b]">10+</p>
+                <p className="text-4xl font-serif font-bold text-tea-primary">10+</p>
                 <p className="text-xs text-gray-400 uppercase tracking-widest font-bold">Năm kinh nghiệm</p>
               </div>
               <div className="w-px h-12 bg-gray-200" />
               <div>
-                <p className="text-4xl font-serif font-bold text-[#1f3d2b]">50+</p>
+                <p className="text-4xl font-serif font-bold text-tea-primary">50+</p>
                 <p className="text-xs text-gray-400 uppercase tracking-widest font-bold">Vùng trà cổ thụ</p>
               </div>
               <div className="w-px h-12 bg-gray-200" />
               <div>
-                <p className="text-4xl font-serif font-bold text-[#1f3d2b]">10k+</p>
+                <p className="text-4xl font-serif font-bold text-tea-primary">10k+</p>
                 <p className="text-xs text-gray-400 uppercase tracking-widest font-bold">Khách hàng tin dùng</p>
               </div>
             </div>
@@ -47,7 +47,7 @@ export default function About() {
                 referrerPolicy="no-referrer"
               />
             </div>
-            <div className="absolute -bottom-10 -left-10 bg-[#1f3d2b] text-white p-10 rounded-3xl shadow-xl hidden md:block max-w-[300px]">
+            <div className="absolute -bottom-10 -left-10 bg-tea-primary text-white p-10 rounded-3xl shadow-xl hidden md:block max-w-[300px]">
               <p className="text-xl font-serif italic">"Trà là sự kết nối giữa con người và thiên nhiên."</p>
             </div>
           </div>
@@ -75,8 +75,8 @@ export default function About() {
             }
           ].map((item, i) => (
             <div key={i} className="p-10 rounded-3xl bg-white border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 space-y-6">
-              <div className="text-[#1f3d2b]">{item.icon}</div>
-              <h3 className="text-2xl font-serif font-bold text-[#1f3d2b]">{item.title}</h3>
+              <div className="text-tea-primary">{item.icon}</div>
+              <h3 className="text-2xl font-serif font-bold text-tea-primary">{item.title}</h3>
               <p className="text-gray-500 leading-relaxed">{item.desc}</p>
             </div>
           ))}
@@ -84,14 +84,14 @@ export default function About() {
       </section>
 
       {/* Team Section */}
-      <section className="py-32 px-6 bg-[#1f3d2b] text-white overflow-hidden relative">
+      <section className="py-32 px-6 bg-tea-primary text-white overflow-hidden relative">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center relative z-10">
           <div className="space-y-8">
             <h2 className="text-4xl md:text-5xl font-serif font-bold leading-tight">Đội ngũ nghệ nhân <br /> tâm huyết</h2>
             <p className="text-white/60 text-lg leading-relaxed">
               Chúng tôi may mắn được làm việc cùng những nghệ nhân trà hàng đầu, những người đã dành cả đời để lắng nghe tiếng nói của lá trà. Sự tỉ mỉ trong từng công đoạn chế biến là bí quyết tạo nên hương vị đặc trưng của Trà Việt.
             </p>
-            <button className="bg-white text-[#1f3d2b] px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-opacity-90 transition-all">
+            <button className="bg-white text-tea-primary px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-opacity-90 transition-all">
               Gặp gỡ nghệ nhân
             </button>
           </div>

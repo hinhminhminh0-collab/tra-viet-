@@ -48,16 +48,16 @@ export default function Wishlist() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fcfbf7]">
+    <div className="min-h-screen bg-tea-light">
       <Header />
 
       <section className="pt-40 pb-24 px-6 max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row items-end justify-between gap-6 mb-12">
           <div className="space-y-4">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#1f3d2b]">Sản phẩm yêu thích</h1>
-            <p className="text-gray-500">Bạn đang lưu <span className="font-bold text-[#1f3d2b]">{items.length}</span> phẩm trà ưng ý.</p>
+            <h1 className="text-4xl md:text-5xl font-serif font-bold text-tea-dark">Sản phẩm yêu thích</h1>
+            <p className="text-gray-500">Bạn đang lưu <span className="font-bold text-tea-dark">{items.length}</span> phẩm trà ưng ý.</p>
           </div>
-          <Link to="/shop" className="text-sm font-bold text-[#1f3d2b] border-b-2 border-[#1f3d2b] pb-1 hover:opacity-70 transition-opacity">
+          <Link to="/shop" className="text-sm font-bold text-tea-dark border-b-2 border-tea-dark pb-1 hover:opacity-70 transition-opacity">
             Khám phá thêm
           </Link>
         </div>
@@ -88,15 +88,15 @@ export default function Wishlist() {
         ) : (
           <div className="py-32 text-center space-y-8">
             <div className="w-32 h-32 bg-[#f5f2ed] rounded-full flex items-center justify-center mx-auto">
-              <Heart size={48} className="text-[#1f3d2b]/20" />
+              <Heart size={48} className="text-tea-dark/20" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-3xl font-serif font-bold text-[#1f3d2b]">Chưa có sản phẩm yêu thích</h2>
+              <h2 className="text-3xl font-serif font-bold text-tea-dark">Chưa có sản phẩm yêu thích</h2>
               <p className="text-gray-500">Hãy dạo quanh cửa hàng và thả tim cho những phẩm trà bạn thích nhé.</p>
             </div>
             <Link
               to="/shop"
-              className="inline-block bg-[#1f3d2b] text-white px-12 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-opacity-90 transition-all shadow-xl shadow-[#1f3d2b]/20"
+              className="inline-block bg-tea-primary text-white px-12 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-opacity-90 transition-all shadow-xl shadow-tea-primary/20"
             >
               Xem cửa hàng
             </Link>

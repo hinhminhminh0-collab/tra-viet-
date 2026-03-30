@@ -32,7 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return () => unsubscribe();
   }, []);
 
-  const isAdmin = user?.email?.toLowerCase() === 'hinhminhminh0@gmail.com' || role === 'admin';
+  const isAdmin = ['hinhminhminh0@gmail.com', 'nghiazet7@gmail.com'].includes(user?.email?.toLowerCase() || '') || role === 'admin';
 
   return (
     <AuthContext.Provider value={{ user, loading, isAdmin }}>

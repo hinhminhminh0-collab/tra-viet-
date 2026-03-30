@@ -80,12 +80,12 @@ export default function ProductCard({ product }: ProductCardProps) {
                   e.preventDefault();
                   setIsEditing(true);
                 }}
-                className="bg-[#1f3d2b] text-white p-2 rounded-full shadow-md hover:bg-black transition-colors"
+                className="bg-tea-primary text-white p-2 rounded-full shadow-md hover:bg-black transition-colors"
               >
                 <Edit size={14} />
               </button>
             )}
-            <button className="bg-white p-2 rounded-full shadow-md hover:bg-[#1f3d2b] hover:text-white transition-colors">
+            <button className="bg-white p-2 rounded-full shadow-md hover:bg-tea-primary hover:text-white transition-colors">
               <Heart size={14} />
             </button>
             <button 
@@ -93,7 +93,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 e.preventDefault();
                 addToCart(product);
               }}
-              className="bg-white p-2 rounded-full shadow-md hover:bg-[#1f3d2b] hover:text-white transition-colors"
+              className="bg-white p-2 rounded-full shadow-md hover:bg-tea-primary hover:text-white transition-colors"
             >
               <ShoppingCart size={14} />
             </button>
@@ -112,7 +112,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
           
           <Link to={`/product/${product.id}`} className="block">
-            <h3 className="text-xs font-serif font-bold text-[#1f3d2b] hover:opacity-70 transition-opacity line-clamp-1">
+            <h3 className="text-xs font-serif font-bold text-tea-dark hover:opacity-70 transition-opacity line-clamp-1">
               {product.name}
             </h3>
             <p className={cn(
@@ -124,12 +124,12 @@ export default function ProductCard({ product }: ProductCardProps) {
           </Link>
           
           <div className="flex items-center justify-between pt-0.5">
-            <span className="text-xs font-bold text-[#1f3d2b]">
+            <span className="text-xs font-bold text-tea-dark">
               {formatPrice(product.price)}
             </span>
             <button 
               onClick={handleBuyNow}
-              className="text-[9px] font-bold text-[#1f3d2b] underline underline-offset-2 hover:opacity-70 transition-opacity"
+              className="text-[9px] font-bold text-tea-dark underline underline-offset-2 hover:opacity-70 transition-opacity"
             >
               Mua
             </button>
@@ -155,16 +155,16 @@ export default function ProductCard({ product }: ProductCardProps) {
               className="relative w-full max-w-lg bg-white rounded-[40px] p-10 shadow-2xl space-y-8 overflow-hidden"
             >
               {/* Decorative Leaf */}
-              <div className="absolute -top-10 -right-10 text-[#1f3d2b]/5 rotate-12">
+              <div className="absolute -top-10 -right-10 text-tea-dark/5 rotate-12">
                 <Leaf size={200} />
               </div>
 
               <div className="relative flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-[#1f3d2b]/10 rounded-xl text-[#1f3d2b]">
+                  <div className="p-2 bg-tea-primary/10 rounded-xl text-tea-primary">
                     <Leaf size={24} />
                   </div>
-                  <h2 className="text-2xl font-serif font-bold text-[#1f3d2b]">Chỉnh sửa sản phẩm</h2>
+                  <h2 className="text-2xl font-serif font-bold text-tea-dark">Chỉnh sửa sản phẩm</h2>
                 </div>
                 <button onClick={() => setIsEditing(false)} className="text-gray-400 hover:text-red-500 transition-colors">
                   <X size={24} />
@@ -173,17 +173,17 @@ export default function ProductCard({ product }: ProductCardProps) {
 
               <div className="relative space-y-6">
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-[#1f3d2b] uppercase tracking-widest">Tên sản phẩm</label>
+                  <label className="text-[10px] font-bold text-tea-dark uppercase tracking-widest">Tên sản phẩm</label>
                   <input
                     type="text"
                     value={editData.name}
                     onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-tea-primary transition-colors"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-[10px] font-bold text-[#1f3d2b] uppercase tracking-widest">Đường dẫn hình ảnh (URL)</label>
+                  <label className="text-[10px] font-bold text-tea-dark uppercase tracking-widest">Đường dẫn hình ảnh (URL)</label>
                   <div className="relative">
                     <ImageIcon className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                     <input
@@ -191,7 +191,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                       value={editData.imageUrl}
                       onChange={(e) => setEditData({ ...editData, imageUrl: e.target.value })}
                       placeholder="https://example.com/image.jpg"
-                      className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-12 pr-6 py-4 focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-2xl pl-12 pr-6 py-4 focus:outline-none focus:border-tea-primary transition-colors"
                     />
                   </div>
                   {editData.imageUrl && (
@@ -203,29 +203,29 @@ export default function ProductCard({ product }: ProductCardProps) {
 
                 <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-[#1f3d2b] uppercase tracking-widest">Giá (VNĐ)</label>
+                    <label className="text-[10px] font-bold text-tea-dark uppercase tracking-widest">Giá (VNĐ)</label>
                     <input
                       type="number"
                       value={editData.price}
                       onChange={(e) => setEditData({ ...editData, price: Number(e.target.value) })}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-tea-primary transition-colors"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-[#1f3d2b] uppercase tracking-widest">Kho</label>
+                    <label className="text-[10px] font-bold text-tea-dark uppercase tracking-widest">Kho</label>
                     <input
                       type="number"
                       value={editData.stock}
                       onChange={(e) => setEditData({ ...editData, stock: Number(e.target.value) })}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-tea-primary transition-colors"
                     />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[10px] font-bold text-[#1f3d2b] uppercase tracking-widest">Danh mục</label>
+                    <label className="text-[10px] font-bold text-tea-dark uppercase tracking-widest">Danh mục</label>
                     <select
                       value={editData.category}
                       onChange={(e) => setEditData({ ...editData, category: e.target.value })}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-[#1f3d2b] transition-colors appearance-none"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-tea-primary transition-colors appearance-none"
                     >
                       <option value="Bạch trà">Bạch trà</option>
                       <option value="Hồng trà">Hồng trà</option>
@@ -248,7 +248,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 <button
                   onClick={handleSave}
                   disabled={isSaving}
-                  className="flex-1 py-4 bg-[#1f3d2b] text-white rounded-full font-bold uppercase tracking-widest text-xs hover:bg-black transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#1f3d2b]/20"
+                  className="flex-1 py-4 bg-tea-primary text-white rounded-full font-bold uppercase tracking-widest text-xs hover:bg-black transition-all flex items-center justify-center gap-2 shadow-lg shadow-tea-primary/20"
                 >
                   {isSaving ? 'Đang lưu...' : (
                     <>

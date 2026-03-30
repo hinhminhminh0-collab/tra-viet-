@@ -41,7 +41,7 @@ const resources = {
         "shop": "Cửa hàng",
         "about": "Giới thiệu",
         "contact": "Liên hệ",
-        "admin": "Quản trị"
+        "admin": "Quản trị viên chính"
       },
       "hero": {
         "title": "Trà Phúc Linh",

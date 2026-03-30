@@ -24,7 +24,7 @@ import {
   deleteDoc, 
   addDoc 
 } from 'firebase/firestore';
-import { Product } from '../types';
+import { Product, Category } from '../types';
 import { formatPrice, cn } from '../lib/utils';
 import { toast } from 'sonner';
 import Header from '../components/layout/Header';
@@ -33,6 +33,7 @@ import { useAuth } from '../context/AuthContext';
 
 export default function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -41,7 +42,7 @@ export default function AdminProducts() {
   const [newProductForm, setNewProductForm] = useState<Partial<Product>>({
     name: '',
     price: 0,
-    category: 'Lục trà',
+    category: '',
     stock: 0,
     description: '',
     images: ['https://picsum.photos/seed/tea/800/800'],
@@ -60,8 +61,8 @@ export default function AdminProducts() {
       return;
     }
 
-    const q = query(collection(db, 'products'), orderBy('name', 'asc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const qProducts = query(collection(db, 'products'), orderBy('name', 'asc'));
+    const unsubscribeProducts = onSnapshot(qProducts, (snapshot) => {
       const productsData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
@@ -70,7 +71,22 @@ export default function AdminProducts() {
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    const qCategories = query(collection(db, 'categories'), orderBy('name', 'asc'));
+    const unsubscribeCategories = onSnapshot(qCategories, (snapshot) => {
+      const categoriesData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Category[];
+      setCategories(categoriesData);
+      if (categoriesData.length > 0 && !newProductForm.category) {
+        setNewProductForm(prev => ({ ...prev, category: categoriesData[0].name }));
+      }
+    });
+
+    return () => {
+      unsubscribeProducts();
+      unsubscribeCategories();
+    };
   }, [isAdmin, navigate]);
 
   const handleEdit = (product: Product) => {
@@ -98,7 +114,7 @@ export default function AdminProducts() {
       setNewProductForm({
         name: '',
         price: 0,
-        category: 'Lục trà',
+        category: categories.length > 0 ? categories[0].name : '',
         stock: 0,
         description: '',
         images: ['https://picsum.photos/seed/tea/800/800'],
@@ -134,16 +150,16 @@ export default function AdminProducts() {
   if (!isAdmin) return null;
 
   return (
-    <div className="min-h-screen bg-[#fcfbf7]">
+    <div className="min-h-screen bg-tea-light">
       <Header />
       
       <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
           <div className="space-y-2">
-            <Link to="/profile" className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-[#1f3d2b] transition-colors mb-2">
+            <Link to="/profile" className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-tea-primary transition-colors mb-2">
               <ArrowLeft size={12} /> Quay lại Profile
             </Link>
-            <h1 className="text-3xl font-serif font-bold text-[#1f3d2b]">Quản lý sản phẩm</h1>
+            <h1 className="text-3xl font-serif font-bold text-tea-dark">Quản lý sản phẩm</h1>
             <p className="text-sm text-gray-500">Chỉnh sửa thông tin và giá cả của các phẩm trà.</p>
           </div>
         </div>
@@ -184,10 +200,10 @@ export default function AdminProducts() {
                                   type="text"
                                   value={editForm.name}
                                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                                  className="bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs font-bold text-[#1f3d2b] w-full"
+                                  className="bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs font-bold text-tea-dark w-full"
                                 />
                               ) : (
-                                <span className="text-xs font-bold text-[#1f3d2b]">{product.name}</span>
+                                <span className="text-xs font-bold text-tea-dark">{product.name}</span>
                               )}
                             </div>
                           </td>
@@ -198,8 +214,8 @@ export default function AdminProducts() {
                                 onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
                                 className="bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs"
                               >
-                                {['Bạch trà', 'Hồng trà', 'Lục trà', 'Oolong', 'Phổ Nhĩ', 'Trà thảo mộc'].map(cat => (
-                                  <option key={cat} value={cat}>{cat}</option>
+                                {categories.map(cat => (
+                                  <option key={cat.id} value={cat.name}>{cat.name}</option>
                                 ))}
                               </select>
                             ) : (
@@ -221,7 +237,7 @@ export default function AdminProducts() {
                                     toast.success("Đã cập nhật giá!");
                                   }
                                 }}
-                                className="w-24 bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs font-bold text-[#1f3d2b] focus:border-[#1f3d2b] focus:outline-none"
+                                className="w-24 bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs font-bold text-tea-dark focus:border-tea-primary focus:outline-none"
                               />
                             </div>
                           </td>
@@ -238,7 +254,7 @@ export default function AdminProducts() {
                                 }
                               }}
                               className={cn(
-                                "w-16 bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs focus:border-[#1f3d2b] focus:outline-none",
+                                "w-16 bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs focus:border-tea-primary focus:outline-none",
                                 product.stock < 10 ? "text-red-500 font-bold" : "text-gray-600"
                               )}
                             />
@@ -264,7 +280,7 @@ export default function AdminProducts() {
                                 <>
                                   <button 
                                     onClick={() => handleEdit(product)}
-                                    className="p-1.5 text-gray-400 hover:text-[#1f3d2b] hover:bg-white rounded-lg transition-colors"
+                                    className="p-1.5 text-gray-400 hover:text-tea-primary hover:bg-white rounded-lg transition-colors"
                                   >
                                     <Edit2 size={14} />
                                   </button>
@@ -299,7 +315,7 @@ export default function AdminProducts() {
             <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-6">
               <button 
                 onClick={() => setIsAdding(true)}
-                className="w-full bg-[#1f3d2b] text-white py-3.5 rounded-xl font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-opacity-90 transition-all shadow-lg shadow-[#1f3d2b]/10 text-xs"
+                className="w-full bg-tea-primary text-white py-3.5 rounded-xl font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-opacity-90 transition-all shadow-lg shadow-tea-primary/10 text-xs"
               >
                 <Plus size={16} /> Thêm sản phẩm
               </button>
@@ -314,7 +330,7 @@ export default function AdminProducts() {
                       placeholder="Tên sản phẩm..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-100 rounded-xl pl-9 pr-4 py-2.5 text-xs focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                      className="w-full bg-gray-50 border border-gray-100 rounded-xl pl-9 pr-4 py-2.5 text-xs focus:outline-none focus:border-tea-primary transition-colors"
                     />
                   </div>
                 </div>
@@ -322,18 +338,29 @@ export default function AdminProducts() {
                 <div className="space-y-2">
                   <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Danh mục</label>
                   <div className="grid grid-cols-1 gap-1">
-                    {['Tất cả', 'Bạch trà', 'Hồng trà', 'Lục trà', 'Oolong', 'Phổ Nhĩ', 'Trà thảo mộc'].map(cat => (
+                    <button
+                      onClick={() => setSearchQuery('')}
+                      className={cn(
+                        "text-left px-3 py-2 rounded-lg text-[10px] font-bold transition-all uppercase tracking-wider",
+                        searchQuery === ''
+                          ? "bg-tea-primary text-white"
+                          : "text-gray-500 hover:bg-gray-50"
+                      )}
+                    >
+                      Tất cả
+                    </button>
+                    {categories.map(cat => (
                       <button
-                        key={cat}
-                        onClick={() => setSearchQuery(cat === 'Tất cả' ? '' : cat)}
+                        key={cat.id}
+                        onClick={() => setSearchQuery(cat.name)}
                         className={cn(
                           "text-left px-3 py-2 rounded-lg text-[10px] font-bold transition-all uppercase tracking-wider",
-                          (searchQuery === cat || (cat === 'Tất cả' && searchQuery === ''))
-                            ? "bg-[#1f3d2b] text-white"
+                          searchQuery === cat.name
+                            ? "bg-tea-primary text-white"
                             : "text-gray-500 hover:bg-gray-50"
                         )}
                       >
-                        {cat}
+                        {cat.name}
                       </button>
                     ))}
                   </div>
@@ -341,11 +368,11 @@ export default function AdminProducts() {
               </div>
             </div>
 
-            <div className="bg-[#f5f2ed] p-6 rounded-3xl border border-dashed border-gray-200 text-center space-y-2">
-              <p className="text-[10px] font-bold text-[#1f3d2b] uppercase tracking-widest">Thống kê nhanh</p>
+            <div className="bg-tea-light p-6 rounded-3xl border border-dashed border-gray-200 text-center space-y-2">
+              <p className="text-[10px] font-bold text-tea-dark uppercase tracking-widest">Thống kê nhanh</p>
               <div className="grid grid-cols-2 gap-4 pt-2">
                 <div>
-                  <p className="text-lg font-serif font-bold text-[#1f3d2b]">{products.length}</p>
+                  <p className="text-lg font-serif font-bold text-tea-dark">{products.length}</p>
                   <p className="text-[8px] text-gray-400 uppercase font-bold">Sản phẩm</p>
                 </div>
                 <div>
@@ -375,7 +402,7 @@ export default function AdminProducts() {
               className="relative bg-white rounded-[40px] p-10 max-w-2xl w-full shadow-2xl overflow-y-auto max-h-[90vh] space-y-8 no-scrollbar"
             >
               <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-serif font-bold text-[#1f3d2b]">Thêm sản phẩm mới</h2>
+                <h2 className="text-3xl font-serif font-bold text-tea-dark">Thêm sản phẩm mới</h2>
                 <button onClick={() => setIsAdding(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
                   <X size={24} className="text-gray-400" />
                 </button>
@@ -389,7 +416,7 @@ export default function AdminProducts() {
                     type="text"
                     value={newProductForm.name}
                     onChange={(e) => setNewProductForm({ ...newProductForm, name: e.target.value })}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-tea-primary transition-colors"
                   />
                 </div>
                 <div className="space-y-2">
@@ -399,7 +426,7 @@ export default function AdminProducts() {
                     type="number"
                     value={newProductForm.price}
                     onChange={(e) => setNewProductForm({ ...newProductForm, price: Number(e.target.value) })}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-tea-primary transition-colors"
                   />
                 </div>
                 <div className="space-y-2">
@@ -407,10 +434,10 @@ export default function AdminProducts() {
                   <select
                     value={newProductForm.category}
                     onChange={(e) => setNewProductForm({ ...newProductForm, category: e.target.value })}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-tea-primary transition-colors"
                   >
-                    {['Bạch trà', 'Hồng trà', 'Lục trà', 'Oolong', 'Phổ Nhĩ', 'Trà thảo mộc'].map(cat => (
-                      <option key={cat} value={cat}>{cat}</option>
+                    {categories.map(cat => (
+                      <option key={cat.id} value={cat.name}>{cat.name}</option>
                     ))}
                   </select>
                 </div>
@@ -421,7 +448,7 @@ export default function AdminProducts() {
                     type="number"
                     value={newProductForm.stock}
                     onChange={(e) => setNewProductForm({ ...newProductForm, stock: Number(e.target.value) })}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-tea-primary transition-colors"
                   />
                 </div>
                 <div className="space-y-2 md:col-span-2">
@@ -431,7 +458,7 @@ export default function AdminProducts() {
                     rows={4}
                     value={newProductForm.description}
                     onChange={(e) => setNewProductForm({ ...newProductForm, description: e.target.value })}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-tea-primary transition-colors"
                   />
                 </div>
                 <div className="space-y-2">
@@ -440,7 +467,7 @@ export default function AdminProducts() {
                     type="text"
                     value={newProductForm.origin}
                     onChange={(e) => setNewProductForm({ ...newProductForm, origin: e.target.value })}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-tea-primary transition-colors"
                   />
                 </div>
                 <div className="space-y-2">
@@ -449,13 +476,13 @@ export default function AdminProducts() {
                     type="text"
                     value={newProductForm.taste}
                     onChange={(e) => setNewProductForm({ ...newProductForm, taste: e.target.value })}
-                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-tea-primary transition-colors"
                   />
                 </div>
                 <div className="md:col-span-2 pt-4">
                   <button
                     type="submit"
-                    className="w-full bg-[#1f3d2b] text-white py-5 rounded-full font-bold uppercase tracking-widest hover:bg-opacity-90 transition-all shadow-xl shadow-[#1f3d2b]/20"
+                    className="w-full bg-tea-primary text-white py-5 rounded-full font-bold uppercase tracking-widest hover:bg-opacity-90 transition-all shadow-xl shadow-tea-primary/20"
                   >
                     Thêm sản phẩm
                   </button>

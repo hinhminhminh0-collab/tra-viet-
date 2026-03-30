@@ -5,7 +5,7 @@ import { Search, SlidersHorizontal, ChevronDown, X, Leaf, Plus } from 'lucide-re
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import ProductCard from '../components/ui/ProductCard';
-import { Product } from '../types';
+import { Product, Category } from '../types';
 import { cn, formatPrice } from '../lib/utils';
 import { db } from '../firebase';
 import { collection, onSnapshot, query, orderBy, addDoc } from 'firebase/firestore';
@@ -13,179 +13,10 @@ import { ProductSkeleton } from '../components/ui/Loading';
 import { toast } from 'sonner';
 import { useAuth } from '../context/AuthContext';
 
-const CATEGORIES = ['Tất cả', 'Bạch trà', 'Hồng trà', 'Lục trà', 'Oolong', 'Phổ Nhĩ', 'Trà thảo mộc'];
-
-const SAMPLE_PRODUCTS = [
-  {
-    name: "Chè Thái Nguyên Đặc Biệt",
-    price: 250000,
-    category: "Lục trà",
-    origin: "Thái Nguyên",
-    description: "Chè Thái Nguyên nổi tiếng với hương cốm non, vị chát dịu và hậu ngọt sâu.",
-    images: ["https://picsum.photos/seed/greentea1/800/800"],
-    stock: 100,
-    rating: 4.8,
-    reviewsCount: 45
-  },
-  {
-    name: "Hồng Trà Cổ Thụ Hà Giang",
-    price: 450000,
-    category: "Hồng trà",
-    origin: "Hà Giang",
-    description: "Được chế biến từ những búp trà Shan Tuyết cổ thụ, mang hương thơm trái cây chín và vị ngọt mật.",
-    images: ["https://picsum.photos/seed/blacktea1/800/800"],
-    stock: 50,
-    rating: 4.9,
-    reviewsCount: 32
-  },
-  {
-    name: "Chè Shan Tuyết Suối Giàng",
-    price: 600000,
-    category: "Bạch trà",
-    origin: "Yên Bái",
-    description: "Chè Shan Tuyết tinh khiết từ vùng núi cao Suối Giàng, hương thanh tao, vị ngọt thanh mát.",
-    images: ["https://picsum.photos/seed/whitetea1/800/800"],
-    stock: 30,
-    rating: 5.0,
-    reviewsCount: 18
-  },
-  {
-    name: "Oolong Tứ Quý Lâm Đồng",
-    price: 350000,
-    category: "Oolong",
-    origin: "Lâm Đồng",
-    description: "Trà Oolong Tứ Quý có hương hoa lan nồng nàn, nước trà vàng xanh trong trẻo.",
-    images: ["https://picsum.photos/seed/oolong1/800/800"],
-    stock: 80,
-    rating: 4.7,
-    reviewsCount: 28
-  },
-  {
-    name: "Phổ Nhĩ Sống Tây Côn Lĩnh",
-    price: 1200000,
-    category: "Phổ Nhĩ",
-    origin: "Hà Giang",
-    description: "Trà Phổ Nhĩ sống được ép bánh từ lá trà cổ thụ, càng để lâu càng ngon và giá trị.",
-    images: ["https://picsum.photos/seed/puerh1/800/800"],
-    stock: 20,
-    rating: 4.9,
-    reviewsCount: 12
-  },
-  {
-    name: "Chè Vằng ",
-    price: 150000,
-    category: "Trà thảo mộc",
-    origin: "Quảng Trị",
-    description: "Chè Vằng sẻ giúp thanh nhiệt, giải độc, đặc biệt tốt cho phụ nữ sau sinh.",
-    images: ["https://picsum.photos/seed/chevang/800/800"],
-    stock: 150,
-    rating: 4.6,
-    reviewsCount: 56
-  },
-  {
-    name: "Trà Sen Tây Hồ",
-    price: 800000,
-    category: "Lục trà",
-    origin: "Hà Nội",
-    description: "Đệ nhất trà Việt, được ướp từ sen bách diệp Tây Hồ theo phương pháp truyền thống.",
-    images: ["https://picsum.photos/seed/lotustea1/800/800"],
-    stock: 15,
-    rating: 5.0,
-    reviewsCount: 25
-  },
-  {
-    name: "Chè Dây Cao Bằng",
-    price: 180000,
-    category: "Trà thảo mộc",
-    origin: "Cao Bằng",
-    description: "Chè dây rừng tự nhiên, hỗ trợ tiêu hóa và giảm viêm loét dạ dày.",
-    images: ["https://picsum.photos/seed/cheday/800/800"],
-    stock: 120,
-    rating: 4.7,
-    reviewsCount: 40
-  },
-  {
-    name: "Chè Đắng Cao Bằng",
-    price: 320000,
-    category: "Trà thảo mộc",
-    origin: "Cao Bằng",
-    description: "Loại trà có vị đắng đặc trưng nhưng hậu ngọt, giúp ổn định huyết áp và đường huyết.",
-    images: ["https://picsum.photos/seed/chedang/800/800"],
-    stock: 40,
-    rating: 4.8,
-    reviewsCount: 22
-  },
-  {
-    name: "Bạch Trà Móng Rồng",
-    price: 750000,
-    category: "Bạch trà",
-    origin: "Hà Giang",
-    description: "Loại trà quý hiếm có hình dáng như móng rồng, hương vị độc đáo của nhựa thông và hoa rừng.",
-    images: ["https://picsum.photos/seed/dragontea1/800/800"],
-    stock: 25,
-    rating: 4.9,
-    reviewsCount: 15
-  },
-  {
-    name: "Oolong Kim Tuyên",
-    price: 400000,
-    category: "Oolong",
-    origin: "Lâm Đồng",
-    description: "Trà Oolong có vị sữa đặc trưng, hương thơm dịu nhẹ, rất được phái nữ ưa chuộng.",
-    images: ["https://picsum.photos/seed/oolong2/800/800"],
-    stock: 70,
-    rating: 4.7,
-    reviewsCount: 35
-  },
-  {
-    name: "Phổ Nhĩ Chín 10 Năm",
-    price: 1500000,
-    category: "Phổ Nhĩ",
-    origin: "Vân Nam",
-    description: "Trà Phổ Nhĩ chín đã lên men lâu năm, vị ngọt dịu, nước trà đỏ đậm như rượu vang.",
-    images: ["https://picsum.photos/seed/puerh2/800/800"],
-    stock: 10,
-    rating: 5.0,
-    reviewsCount: 8
-  },
-  {
-    name: "Trà Gạo Lứt Huyết Rồng",
-    price: 120000,
-    category: "Trà thảo mộc",
-    origin: "Đồng Tháp",
-    description: "Trà gạo lứt rang thơm phức, giàu dinh dưỡng, hỗ trợ giảm cân và thanh lọc cơ thể.",
-    images: ["https://picsum.photos/seed/rice1/800/800"],
-    stock: 200,
-    rating: 4.5,
-    reviewsCount: 60
-  },
-  {
-    name: "Chè Đinh Thái Nguyên Cao Cấp",
-    price: 1000000,
-    category: "Lục trà",
-    origin: "Thái Nguyên",
-    description: "Được làm từ những mầm trà nhỏ nhất như chiếc đinh, là loại chè xanh cao cấp nhất.",
-    images: ["https://picsum.photos/seed/dingtea1/800/800"],
-    stock: 20,
-    rating: 5.0,
-    reviewsCount: 10
-  },
-  {
-    name: "Chè Tươi Lá Già",
-    price: 50000,
-    category: "Lục trà",
-    origin: "Nghệ An",
-    description: "Lá chè tươi hái từ vườn, dùng để nấu nước uống hàng ngày, thanh nhiệt và giải khát.",
-    images: ["https://picsum.photos/seed/chetuoi/800/800"],
-    stock: 500,
-    rating: 4.9,
-    reviewsCount: 100
-  }
-];
-
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSeeding, setIsSeeding] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -198,6 +29,24 @@ export default function Shop() {
     setIsSeeding(true);
     const productsCol = collection(db, 'products');
     try {
+      // Sample products logic remains the same but uses hardcoded list locally
+      const SAMPLE_PRODUCTS = [
+        { name: "Chè Thái Nguyên Đặc Biệt", price: 250000, category: "Lục trà", origin: "Thái Nguyên", description: "Chè Thái Nguyên nổi tiếng với hương cốm non, vị chát dịu và hậu ngọt sâu.", images: ["https://picsum.photos/seed/greentea1/800/800"], stock: 100, rating: 4.8, reviewsCount: 45 },
+        { name: "Hồng Trà Cổ Thụ Hà Giang", price: 450000, category: "Hồng trà", origin: "Hà Giang", description: "Được chế biến từ những búp trà Shan Tuyết cổ thụ, mang hương thơm trái cây chín và vị ngọt mật.", images: ["https://picsum.photos/seed/blacktea1/800/800"], stock: 50, rating: 4.9, reviewsCount: 32 },
+        { name: "Chè Shan Tuyết Suối Giàng", price: 600000, category: "Bạch trà", origin: "Yên Bái", description: "Chè Shan Tuyết tinh khiết từ vùng núi cao Suối Giàng, hương thanh tao, vị ngọt thanh mát.", images: ["https://picsum.photos/seed/whitetea1/800/800"], stock: 30, rating: 5.0, reviewsCount: 18 },
+        { name: "Oolong Tứ Quý Lâm Đồng", price: 350000, category: "Oolong", origin: "Lâm Đồng", description: "Trà Oolong Tứ Quý có hương hoa lan nồng nàn, nước trà vàng xanh trong trẻo.", images: ["https://picsum.photos/seed/oolong1/800/800"], stock: 80, rating: 4.7, reviewsCount: 28 },
+        { name: "Phổ Nhĩ Sống Tây Côn Lĩnh", price: 1200000, category: "Phổ Nhĩ", origin: "Hà Giang", description: "Trà Phổ Nhĩ sống được ép bánh từ lá trà cổ thụ, càng để lâu càng ngon và giá trị.", images: ["https://picsum.photos/seed/puerh1/800/800"], stock: 20, rating: 4.9, reviewsCount: 12 },
+        { name: "Chè Vằng ", price: 150000, category: "Trà thảo mộc", origin: "Quảng Trị", description: "Chè Vằng sẻ giúp thanh nhiệt, giải độc, đặc biệt tốt cho phụ nữ sau sinh.", images: ["https://picsum.photos/seed/chevang/800/800"], stock: 150, rating: 4.6, reviewsCount: 56 },
+        { name: "Trà Sen Tây Hồ", price: 800000, category: "Lục trà", origin: "Hà Nội", description: "Đệ nhất trà Việt, được ướp từ sen bách diệp Tây Hồ theo phương pháp truyền thống.", images: ["https://picsum.photos/seed/lotustea1/800/800"], stock: 15, rating: 5.0, reviewsCount: 25 },
+        { name: "Chè Dây Cao Bằng", price: 180000, category: "Trà thảo mộc", origin: "Cao Bằng", description: "Chè dây rừng tự nhiên, hỗ trợ tiêu hóa và giảm viêm loét dạ dày.", images: ["https://picsum.photos/seed/cheday/800/800"], stock: 120, rating: 4.7, reviewsCount: 40 },
+        { name: "Chè Đắng Cao Bằng", price: 320000, category: "Trà thảo mộc", origin: "Cao Bằng", description: "Loại trà có vị đắng đặc trưng nhưng hậu ngọt, giúp ổn định huyết áp và đường huyết.", images: ["https://picsum.photos/seed/chedang/800/800"], stock: 40, rating: 4.8, reviewsCount: 22 },
+        { name: "Bạch Trà Móng Rồng", price: 750000, category: "Bạch trà", origin: "Hà Giang", description: "Loại trà quý hiếm có hình dáng như móng rồng, hương vị độc đáo của nhựa thông và hoa rừng.", images: ["https://picsum.photos/seed/dragontea1/800/800"], stock: 25, rating: 4.9, reviewsCount: 15 },
+        { name: "Oolong Kim Tuyên", price: 400000, category: "Oolong", origin: "Lâm Đồng", description: "Trà Oolong có vị sữa đặc trưng, hương thơm dịu nhẹ, rất được phái nữ ưa chuộng.", images: ["https://picsum.photos/seed/oolong2/800/800"], stock: 70, rating: 4.7, reviewsCount: 35 },
+        { name: "Phổ Nhĩ Chín 10 Năm", price: 1500000, category: "Phổ Nhĩ", origin: "Vân Nam", description: "Trà Phổ Nhĩ chín đã lên men lâu năm, vị ngọt dịu, nước trà đỏ đậm như rượu vang.", images: ["https://picsum.photos/seed/puerh2/800/800"], stock: 10, rating: 5.0, reviewsCount: 8 },
+        { name: "Trà Gạo Lứt Huyết Rồng", price: 120000, category: "Trà thảo mộc", origin: "Đồng Tháp", description: "Trà gạo lứt rang thơm phức, giàu dinh dưỡng, hỗ trợ giảm cân và thanh lọc cơ thể.", images: ["https://picsum.photos/seed/rice1/800/800"], stock: 200, rating: 4.5, reviewsCount: 60 },
+        { name: "Chè Đinh Thái Nguyên Cao Cấp", price: 1000000, category: "Lục trà", origin: "Thái Nguyên", description: "Được làm từ những mầm trà nhỏ nhất như chiếc đinh, là loại chè xanh cao cấp nhất.", images: ["https://picsum.photos/seed/dingtea1/800/800"], stock: 20, rating: 5.0, reviewsCount: 10 },
+        { name: "Chè Tươi Lá Già", price: 50000, category: "Lục trà", origin: "Nghệ An", description: "Lá chè tươi hái từ vườn, dùng để nấu nước uống hàng ngày, thanh nhiệt và giải khát.", images: ["https://picsum.photos/seed/chetuoi/800/800"], stock: 500, rating: 4.9, reviewsCount: 100 }
+      ];
       for (const p of SAMPLE_PRODUCTS) {
         await addDoc(productsCol, p);
       }
@@ -211,8 +60,8 @@ export default function Shop() {
   };
 
   useEffect(() => {
-    const q = query(collection(db, 'products'), orderBy('name', 'asc'));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
+    const qProducts = query(collection(db, 'products'), orderBy('name', 'asc'));
+    const unsubscribeProducts = onSnapshot(qProducts, (snapshot) => {
       const productsData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
@@ -224,7 +73,19 @@ export default function Shop() {
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    const qCategories = query(collection(db, 'categories'), orderBy('name', 'asc'));
+    const unsubscribeCategories = onSnapshot(qCategories, (snapshot) => {
+      const categoriesData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Category[];
+      setCategories(categoriesData);
+    });
+
+    return () => {
+      unsubscribeProducts();
+      unsubscribeCategories();
+    };
   }, []);
 
   const filteredProducts = products.filter(p => {
@@ -244,11 +105,11 @@ export default function Shop() {
   }, [searchParams]);
 
   return (
-    <div className="min-h-screen bg-[#fcfbf7]">
+    <div className="min-h-screen bg-tea-bg">
       <Header />
 
       {/* Hero Header */}
-      <section className="pt-40 pb-20 px-6 bg-[#1f3d2b] text-white text-center">
+      <section className="pt-40 pb-20 px-6 bg-tea-primary text-white text-center">
         <div className="max-w-4xl mx-auto space-y-6">
           <h1 className="text-4xl md:text-5xl font-serif font-bold">Cửa hàng Trà Việt</h1>
           <p className="text-white/60 max-w-2xl mx-auto">
@@ -266,7 +127,7 @@ export default function Shop() {
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
                 <p className="text-sm text-gray-500">
-                  Hiển thị <span className="font-bold text-[#1f3d2b]">{filteredProducts.length}</span> sản phẩm
+                  Hiển thị <span className="font-bold text-tea-primary">{filteredProducts.length}</span> sản phẩm
                 </p>
                 {isAdmin && products.length === 0 && (
                   <button
@@ -303,11 +164,11 @@ export default function Shop() {
             ) : (
               <div className="py-32 text-center space-y-4">
                 <div className="text-6xl">🍃</div>
-                <h3 className="text-2xl font-serif font-bold text-[#1f3d2b]">Không tìm thấy sản phẩm nào</h3>
+                <h3 className="text-2xl font-serif font-bold text-tea-primary">Không tìm thấy sản phẩm nào</h3>
                 <p className="text-gray-500">Hãy thử thay đổi từ khóa hoặc bộ lọc của bạn.</p>
                 <button
                   onClick={() => { setSearchQuery(''); setSelectedCategory('Tất cả'); }}
-                  className="bg-[#1f3d2b] text-white px-8 py-3 rounded-full font-bold uppercase tracking-widest"
+                  className="bg-tea-primary text-white px-8 py-3 rounded-full font-bold uppercase tracking-widest"
                 >
                   Xem tất cả sản phẩm
                 </button>
@@ -319,7 +180,7 @@ export default function Shop() {
           <aside className="w-full lg:w-72 space-y-10 order-1 lg:order-2">
             {/* Search */}
             <div className="space-y-4">
-              <h3 className="text-xs font-bold text-[#1f3d2b] uppercase tracking-widest border-b border-gray-100 pb-2">
+              <h3 className="text-xs font-bold text-tea-primary uppercase tracking-widest border-b border-gray-100 pb-2">
                 Tìm kiếm
               </h3>
               <div className="relative">
@@ -329,29 +190,40 @@ export default function Shop() {
                   placeholder="Tìm sản phẩm..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                  className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-tea-primary transition-colors"
                 />
               </div>
             </div>
 
             {/* Categories */}
             <div className="space-y-4">
-              <h3 className="text-xs font-bold text-[#1f3d2b] uppercase tracking-widest border-b border-gray-100 pb-2">
+              <h3 className="text-xs font-bold text-tea-primary uppercase tracking-widest border-b border-gray-100 pb-2">
                 Danh mục
               </h3>
               <div className="flex flex-col gap-1">
-                {CATEGORIES.map(cat => (
+                <button
+                  onClick={() => setSelectedCategory('Tất cả')}
+                  className={cn(
+                    "text-left px-4 py-2 rounded-lg text-sm transition-all",
+                    selectedCategory === 'Tất cả' 
+                      ? "bg-tea-primary text-white font-medium" 
+                      : "text-gray-600 hover:bg-gray-100"
+                  )}
+                >
+                  Tất cả
+                </button>
+                {categories.map(cat => (
                   <button
-                    key={cat}
-                    onClick={() => setSelectedCategory(cat)}
+                    key={cat.id}
+                    onClick={() => setSelectedCategory(cat.name)}
                     className={cn(
                       "text-left px-4 py-2 rounded-lg text-sm transition-all",
-                      selectedCategory === cat 
-                        ? "bg-[#1f3d2b] text-white font-medium" 
+                      selectedCategory === cat.name 
+                        ? "bg-tea-primary text-white font-medium" 
                         : "text-gray-600 hover:bg-gray-100"
                     )}
                   >
-                    {cat}
+                    {cat.name}
                   </button>
                 ))}
               </div>
@@ -359,7 +231,7 @@ export default function Shop() {
 
             {/* Sort */}
             <div className="space-y-4">
-              <h3 className="text-xs font-bold text-[#1f3d2b] uppercase tracking-widest border-b border-gray-100 pb-2">
+              <h3 className="text-xs font-bold text-tea-primary uppercase tracking-widest border-b border-gray-100 pb-2">
                 Sắp xếp
               </h3>
               <div className="flex flex-col gap-1">
@@ -375,7 +247,7 @@ export default function Shop() {
                     className={cn(
                       "text-left px-4 py-2 rounded-lg text-sm transition-all",
                       sortBy === sort.id 
-                        ? "bg-[#1f3d2b] text-white font-medium" 
+                        ? "bg-tea-primary text-white font-medium" 
                         : "text-gray-600 hover:bg-gray-100"
                     )}
                   >
@@ -387,7 +259,7 @@ export default function Shop() {
 
             {/* Origins */}
             <div className="space-y-4">
-              <h3 className="text-xs font-bold text-[#1f3d2b] uppercase tracking-widest border-b border-gray-100 pb-2">
+              <h3 className="text-xs font-bold text-tea-primary uppercase tracking-widest border-b border-gray-100 pb-2">
                 Xuất xứ
               </h3>
               <div className="flex flex-wrap gap-2">

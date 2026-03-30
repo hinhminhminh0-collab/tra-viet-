@@ -6,21 +6,15 @@ import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import ProductCard from '../components/ui/ProductCard';
 import TeaQuiz from '../components/ui/TeaQuiz';
-import { Product } from '../types';
+import { Product, Category } from '../types';
 import { db } from '../firebase';
-import { collection, query, limit, getDocs, orderBy } from 'firebase/firestore';
+import { collection, query, limit, getDocs, orderBy, onSnapshot } from 'firebase/firestore';
 import { useTranslation } from 'react-i18next';
-
-const CATEGORIES = [
-  { name: 'Bạch trà', image: 'https://picsum.photos/seed/cat1/600/800', count: 12 },
-  { name: 'Hồng trà', image: 'https://picsum.photos/seed/cat2/600/800', count: 18 },
-  { name: 'Trà Oolong', image: 'https://picsum.photos/seed/cat3/600/800', count: 15 },
-  { name: 'Trà Phổ Nhĩ', image: 'https://picsum.photos/seed/cat4/600/800', count: 8 },
-];
 
 export default function Home() {
   const { t } = useTranslation();
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -44,12 +38,40 @@ export default function Home() {
       }
     };
 
+    const qCategories = query(collection(db, 'categories'), orderBy('name', 'asc'), limit(4));
+    const unsubscribeCategories = onSnapshot(qCategories, (snapshot) => {
+      const categoriesData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Category[];
+      setCategories(categoriesData);
+    });
+
     fetchFeaturedProducts();
+    return () => unsubscribeCategories();
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#fcfbf7]">
+    <div className="min-h-screen bg-tea-bg relative overflow-hidden">
       <Header />
+
+      {/* Floating Leaves */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        {[...Array(12)].map((_, i) => (
+          <div
+            key={i}
+            className="leaf-animation"
+            style={{
+              left: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 15}s`,
+              animationDuration: `${10 + Math.random() * 10}s`,
+              fontSize: `${10 + Math.random() * 20}px`
+            }}
+          >
+            <Leaf />
+          </div>
+        ))}
+      </div>
 
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
@@ -95,7 +117,7 @@ export default function Home() {
           >
             <Link
               to="/shop"
-              className="bg-white text-[#1f3d2b] px-10 py-4 rounded-full font-bold text-sm uppercase tracking-widest hover:bg-[#1f3d2b] hover:text-white transition-all duration-500 shadow-xl"
+              className="bg-white text-tea-primary px-10 py-4 rounded-full font-bold text-sm uppercase tracking-widest hover:bg-tea-primary hover:text-white transition-all duration-500 shadow-xl"
             >
               {t('hero.cta')}
             </Link>
@@ -123,10 +145,10 @@ export default function Home() {
             { icon: <Clock />, title: "Hỗ trợ 24/7", desc: "Hotline: 0898992654" },
           ].map((item, i) => (
             <div key={i} className="flex flex-col items-center text-center space-y-3 group">
-              <div className="p-4 rounded-full bg-[#f5f2ed] text-[#1f3d2b] group-hover:bg-[#1f3d2b] group-hover:text-white transition-all duration-500">
+              <div className="p-4 rounded-full bg-tea-bg text-tea-primary group-hover:bg-tea-primary group-hover:text-white transition-all duration-500">
                 {item.icon}
               </div>
-              <h3 className="font-bold text-[#1f3d2b]">{item.title}</h3>
+              <h3 className="font-bold text-tea-primary">{item.title}</h3>
               <p className="text-xs text-gray-500">{item.desc}</p>
             </div>
           ))}
@@ -138,16 +160,16 @@ export default function Home() {
         <div className="max-w-7xl mx-auto space-y-16">
           <div className="flex flex-col md:flex-row items-end justify-between gap-6">
             <div className="space-y-4">
-              <span className="text-xs font-bold text-[#1f3d2b] uppercase tracking-widest">Danh mục</span>
-              <h2 className="text-4xl font-serif font-bold text-[#1f3d2b]">Khám phá thế giới trà</h2>
+              <span className="text-xs font-bold text-tea-primary uppercase tracking-widest">Danh mục</span>
+              <h2 className="text-4xl font-serif font-bold text-tea-primary">Khám phá thế giới trà</h2>
             </div>
-            <Link to="/shop" className="text-sm font-bold text-[#1f3d2b] flex items-center gap-2 hover:opacity-70 transition-opacity">
+            <Link to="/shop" className="text-sm font-bold text-tea-primary flex items-center gap-2 hover:opacity-70 transition-opacity">
               Xem tất cả <ArrowRight size={16} />
             </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            {CATEGORIES.map((cat, i) => (
+            {categories.map((cat, i) => (
               <Link
                 key={i}
                 to={`/shop?cat=${cat.name}`}
@@ -162,7 +184,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                 <div className="absolute bottom-8 left-8 text-white space-y-1">
                   <h3 className="text-2xl font-serif font-bold">{cat.name}</h3>
-                  <p className="text-xs opacity-60">{cat.count} sản phẩm</p>
+                  <p className="text-xs opacity-60">Khám phá ngay</p>
                 </div>
               </Link>
             ))}
@@ -171,11 +193,11 @@ export default function Home() {
       </section>
 
       {/* Highlight Products */}
-      <section className="py-24 px-6 bg-[#1f3d2b]/5">
+      <section className="py-24 px-6 bg-tea-primary/5">
         <div className="max-w-7xl mx-auto space-y-16">
           <div className="text-center space-y-4">
-            <span className="text-xs font-bold text-[#1f3d2b] uppercase tracking-widest">Bán chạy nhất</span>
-            <h2 className="text-4xl font-serif font-bold text-[#1f3d2b]">Phẩm trà được yêu thích</h2>
+            <span className="text-xs font-bold text-tea-primary uppercase tracking-widest">Bán chạy nhất</span>
+            <h2 className="text-4xl font-serif font-bold text-tea-primary">Phẩm trà được yêu thích</h2>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
@@ -193,7 +215,7 @@ export default function Home() {
           <div className="text-center">
             <Link
               to="/shop"
-              className="inline-flex items-center gap-2 text-[#1f3d2b] font-bold border-b-2 border-[#1f3d2b] pb-1 hover:opacity-70 transition-opacity"
+              className="inline-flex items-center gap-2 text-tea-primary font-bold border-b-2 border-tea-primary pb-1 hover:opacity-70 transition-opacity"
             >
               Xem tất cả sản phẩm <ArrowRight size={18} />
             </Link>
@@ -213,14 +235,14 @@ export default function Home() {
                 referrerPolicy="no-referrer"
               />
             </div>
-            <div className="absolute -top-10 -left-10 w-64 h-64 bg-[#1f3d2b]/10 rounded-full blur-3xl -z-0" />
-            <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-orange-200/20 rounded-full blur-3xl -z-0" />
+            <div className="absolute -top-10 -left-10 w-64 h-64 bg-tea-primary/10 rounded-full blur-3xl -z-0" />
+            <div className="absolute -bottom-10 -right-10 w-64 h-64 bg-tea-accent/20 rounded-full blur-3xl -z-0" />
             <div className="absolute top-1/2 right-0 translate-x-1/2 -translate-y-1/2 bg-white p-8 rounded-2xl shadow-xl z-20 hidden md:block max-w-[240px]">
               <p className="text-sm italic text-gray-600 leading-relaxed">
                 "Trà không chỉ là thức uống, trà là hơi thở, là sự tĩnh lặng giữa dòng đời hối hả."
               </p>
               <div className="mt-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full overflow-hidden bg-[#1f3d2b]">
+                <div className="w-10 h-10 rounded-full overflow-hidden bg-tea-primary">
                   <img 
                     src="https://api.dicebear.com/7.x/avataaars/svg?seed=HoangMinhNghia" 
                     alt="Hoàng Minh Nghĩa" 
@@ -229,7 +251,7 @@ export default function Home() {
                   />
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-[#1f3d2b]">Hoàng Minh Nghĩa</p>
+                  <p className="text-xs font-bold text-tea-primary">Hoàng Minh Nghĩa</p>
                   <p className="text-[10px] text-gray-400">Nghệ nhân trà đạo</p>
                 </div>
               </div>
@@ -238,8 +260,8 @@ export default function Home() {
 
           <div className="space-y-8">
             <div className="space-y-4">
-              <span className="text-xs font-bold text-[#1f3d2b] uppercase tracking-widest">Về chúng tôi</span>
-              <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#1f3d2b] leading-tight">
+              <span className="text-xs font-bold text-tea-primary uppercase tracking-widest">Về chúng tôi</span>
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-tea-primary leading-tight">
                 Lan tỏa văn hóa <br /> trà Việt tinh túy
               </h2>
             </div>
@@ -250,7 +272,7 @@ export default function Home() {
               Trà Việt không chỉ bán trà, chúng tôi mang đến một lối sống tỉnh thức, giúp bạn tìm lại sự bình yên trong tâm hồn qua từng chén trà thơm.
             </p>
             <div className="pt-4">
-              <Link to="/about" className="inline-flex items-center gap-2 text-[#1f3d2b] font-bold border-b-2 border-[#1f3d2b] pb-1 hover:opacity-70 transition-opacity">
+              <Link to="/about" className="inline-flex items-center gap-2 text-tea-primary font-bold border-b-2 border-tea-primary pb-1 hover:opacity-70 transition-opacity">
                 Khám phá câu chuyện <ArrowRight size={18} />
               </Link>
             </div>
@@ -266,7 +288,7 @@ export default function Home() {
       </section>
 
       {/* Newsletter */}
-      <section className="py-24 px-6 bg-[#1f3d2b] text-white text-center">
+      <section className="py-24 px-6 bg-tea-primary text-white text-center">
         <div className="max-w-3xl mx-auto space-y-8">
           <div className="space-y-4">
             <h2 className="text-4xl font-serif font-bold">Gia nhập cộng đồng yêu trà</h2>
@@ -278,7 +300,7 @@ export default function Home() {
               placeholder="Email của bạn..."
               className="flex-1 bg-white/10 border border-white/20 rounded-full px-8 py-4 focus:outline-none focus:border-white transition-colors"
             />
-            <button className="bg-white text-[#1f3d2b] px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-opacity-90 transition-all">
+            <button className="bg-white text-tea-primary px-10 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-opacity-90 transition-all">
               Đăng ký
             </button>
           </form>

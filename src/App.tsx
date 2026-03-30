@@ -14,6 +14,9 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import AdminOrders from './pages/AdminOrders';
 import AdminProducts from './pages/AdminProducts';
+import AdminUsers from './pages/AdminUsers';
+import AdminBlog from './pages/AdminBlog';
+import AdminCategories from './pages/AdminCategories';
 import Profile from './pages/Profile';
 import Wishlist from './pages/Wishlist';
 import { seedProducts } from './lib/seed';
@@ -39,6 +42,9 @@ export default function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/admin/orders" element={<AdminOrders />} />
             <Route path="/admin/products" element={<AdminProducts />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/blog" element={<AdminBlog />} />
+            <Route path="/admin/categories" element={<AdminCategories />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/profile" element={<Profile />} />

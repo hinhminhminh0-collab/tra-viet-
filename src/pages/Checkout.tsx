@@ -77,7 +77,7 @@ export default function Checkout() {
 
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-[#fcfbf7] flex flex-col">
+      <div className="min-h-screen bg-tea-light flex flex-col">
         <Header />
         <div className="flex-1 flex items-center justify-center px-6 pt-20">
           <motion.div 
@@ -85,7 +85,7 @@ export default function Checkout() {
             animate={{ opacity: 1, scale: 1 }}
             className="max-w-md w-full bg-white rounded-[40px] p-12 text-center shadow-2xl border border-gray-100 space-y-8 relative overflow-hidden"
           >
-            <div className="absolute -top-10 -right-10 text-[#1f3d2b]/5 rotate-12">
+            <div className="absolute -top-10 -right-10 text-tea-dark/5 rotate-12">
               <Leaf size={200} />
             </div>
             
@@ -93,7 +93,7 @@ export default function Checkout() {
               <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
                 <CheckCircle2 size={48} className="text-green-500" />
               </div>
-              <h1 className="text-3xl font-serif font-bold text-[#1f3d2b]">Đặt hàng thành công!</h1>
+              <h1 className="text-3xl font-serif font-bold text-tea-dark">Đặt hàng thành công!</h1>
               <p className="text-gray-500 mt-4 leading-relaxed">
                 Cảm ơn bạn đã tin tưởng Trà Việt. Đơn hàng của bạn đang được xử lý và sẽ sớm được giao đến bạn.
               </p>
@@ -102,7 +102,7 @@ export default function Checkout() {
             <div className="relative pt-4">
               <button 
                 onClick={() => navigate('/shop')}
-                className="w-full bg-[#1f3d2b] text-white py-4 rounded-full font-bold uppercase tracking-widest hover:bg-black transition-all shadow-xl shadow-[#1f3d2b]/20"
+                className="w-full bg-tea-primary text-white py-4 rounded-full font-bold uppercase tracking-widest hover:bg-black transition-all shadow-xl shadow-tea-primary/20"
               >
                 Tiếp tục mua sắm
               </button>
@@ -115,13 +115,13 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fcfbf7]">
+    <div className="min-h-screen bg-tea-light">
       <Header />
       
       <section className="pt-40 pb-24 px-6 max-w-7xl mx-auto">
         <button 
           onClick={() => navigate('/cart')}
-          className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-[#1f3d2b] transition-colors mb-8"
+          className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-tea-primary transition-colors mb-8"
         >
           <ArrowLeft size={16} /> Quay lại giỏ hàng
         </button>
@@ -130,13 +130,13 @@ export default function Checkout() {
           {/* Checkout Form */}
           <div className="lg:col-span-2 space-y-12">
             <div className="space-y-4">
-              <h1 className="text-4xl font-serif font-bold text-[#1f3d2b]">Thanh toán</h1>
+              <h1 className="text-4xl font-serif font-bold text-tea-dark">Thanh toán</h1>
               <p className="text-gray-500">Vui lòng điền thông tin giao hàng để hoàn tất đơn hàng.</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-10">
               <div className="bg-white p-10 rounded-[40px] shadow-xl border border-gray-100 space-y-8">
-                <div className="flex items-center gap-3 text-[#1f3d2b] border-b border-gray-50 pb-4">
+                <div className="flex items-center gap-3 text-tea-dark border-b border-gray-50 pb-4">
                   <Truck size={20} />
                   <h3 className="font-bold uppercase tracking-widest text-sm">Thông tin nhận hàng</h3>
                 </div>
@@ -151,7 +151,7 @@ export default function Checkout() {
                       value={formData.fullName}
                       onChange={handleInputChange}
                       placeholder="Nguyễn Văn A"
-                      className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-tea-primary transition-colors"
                     />
                   </div>
                   <div className="space-y-2">
@@ -163,7 +163,7 @@ export default function Checkout() {
                       value={formData.phone}
                       onChange={handleInputChange}
                       placeholder="0901234567"
-                      className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-tea-primary transition-colors"
                     />
                   </div>
                 </div>
@@ -177,7 +177,7 @@ export default function Checkout() {
                     value={formData.email}
                     onChange={handleInputChange}
                     placeholder="example@gmail.com"
-                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-tea-primary transition-colors"
                   />
                 </div>
 
@@ -190,13 +190,13 @@ export default function Checkout() {
                     value={formData.address}
                     onChange={handleInputChange}
                     placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành"
-                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-tea-primary transition-colors"
                   />
                 </div>
               </div>
 
               <div className="bg-white p-10 rounded-[40px] shadow-xl border border-gray-100 space-y-8">
-                <div className="flex items-center gap-3 text-[#1f3d2b] border-b border-gray-50 pb-4">
+                <div className="flex items-center gap-3 text-tea-dark border-b border-gray-50 pb-4">
                   <CreditCard size={20} />
                   <h3 className="font-bold uppercase tracking-widest text-sm">Phương thức thanh toán</h3>
                 </div>
@@ -212,8 +212,8 @@ export default function Checkout() {
                       key={method.id}
                       className={cn(
                         "relative p-6 rounded-3xl border-2 cursor-pointer transition-all flex flex-col gap-1",
-                        formData.paymentMethod === method.id 
-                          ? "border-[#1f3d2b] bg-[#1f3d2b]/5" 
+                         formData.paymentMethod === method.id 
+                          ? "border-tea-primary bg-tea-primary/5" 
                           : "border-gray-100 hover:border-gray-200"
                       )}
                     >
@@ -225,10 +225,10 @@ export default function Checkout() {
                         onChange={handleInputChange}
                         className="sr-only"
                       />
-                      <span className="text-sm font-bold text-[#1f3d2b]">{method.label}</span>
+                      <span className="text-sm font-bold text-tea-dark">{method.label}</span>
                       <span className="text-[10px] text-gray-400">{method.desc}</span>
                       {formData.paymentMethod === method.id && (
-                        <div className="absolute top-4 right-4 text-[#1f3d2b]">
+                        <div className="absolute top-4 right-4 text-tea-primary">
                           <CheckCircle2 size={16} />
                         </div>
                       )}
@@ -240,7 +240,7 @@ export default function Checkout() {
               <button 
                 type="submit"
                 disabled={isProcessing || cart.length === 0}
-                className="w-full bg-[#1f3d2b] text-white py-6 rounded-full font-bold uppercase tracking-widest hover:bg-black transition-all shadow-2xl shadow-[#1f3d2b]/20 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-tea-primary text-white py-6 rounded-full font-bold uppercase tracking-widest hover:bg-black transition-all shadow-2xl shadow-tea-primary/20 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isProcessing ? (
                   <>
@@ -259,7 +259,7 @@ export default function Checkout() {
           {/* Order Summary */}
           <div className="space-y-8">
             <div className="bg-white p-8 rounded-[40px] shadow-2xl border border-gray-100 space-y-8 sticky top-32">
-              <h3 className="text-xl font-serif font-bold text-[#1f3d2b] border-b border-gray-100 pb-6">Tóm tắt đơn hàng</h3>
+              <h3 className="text-xl font-serif font-bold text-tea-dark border-b border-gray-100 pb-6">Tóm tắt đơn hàng</h3>
               
               <div className="max-h-60 overflow-y-auto pr-2 space-y-4 no-scrollbar">
                 {cart.map((item) => (
@@ -268,7 +268,7 @@ export default function Checkout() {
                       <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold text-[#1f3d2b] truncate">{item.name}</p>
+                      <p className="text-sm font-bold text-tea-dark truncate">{item.name}</p>
                       <p className="text-xs text-gray-400">SL: {item.quantity} x {formatPrice(item.price)}</p>
                     </div>
                   </div>
@@ -278,22 +278,22 @@ export default function Checkout() {
               <div className="space-y-4 pt-4 border-t border-gray-100">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Tạm tính</span>
-                  <span className="font-bold text-[#1f3d2b]">{formatPrice(totalPrice)}</span>
+                  <span className="font-bold text-tea-dark">{formatPrice(totalPrice)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500">Phí vận chuyển</span>
-                  <span className="font-bold text-[#1f3d2b]">{shipping === 0 ? 'Miễn phí' : formatPrice(shipping)}</span>
+                  <span className="font-bold text-tea-dark">{shipping === 0 ? 'Miễn phí' : formatPrice(shipping)}</span>
                 </div>
                 <div className="pt-4 border-t border-gray-100 flex justify-between items-end">
-                  <span className="text-lg font-serif font-bold text-[#1f3d2b]">Tổng cộng</span>
+                  <span className="text-lg font-serif font-bold text-tea-dark">Tổng cộng</span>
                   <div className="text-right">
-                    <p className="text-2xl font-bold text-[#1f3d2b]">{formatPrice(total)}</p>
+                    <p className="text-2xl font-bold text-tea-dark">{formatPrice(total)}</p>
                   </div>
                 </div>
               </div>
 
               <div className="p-6 rounded-2xl bg-gray-50 space-y-3">
-                <div className="flex items-center gap-2 text-[#1f3d2b]">
+                <div className="flex items-center gap-2 text-tea-dark">
                   <ShieldCheck size={16} />
                   <span className="text-[10px] font-bold uppercase tracking-widest">Cam kết bảo mật</span>
                 </div>

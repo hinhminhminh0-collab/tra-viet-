@@ -22,14 +22,14 @@ export default function Cart() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fcfbf7]">
+    <div className="min-h-screen bg-tea-light">
       <Header />
 
       <section className="pt-40 pb-24 px-6 max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row items-end justify-between gap-6 mb-12">
             <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#1f3d2b]">Giỏ hàng của bạn</h1>
-              <p className="text-gray-500">Bạn đang có <span className="font-bold text-[#1f3d2b]">{cart.length}</span> sản phẩm trong giỏ hàng.</p>
+              <h1 className="text-4xl md:text-5xl font-serif font-bold text-tea-dark">Giỏ hàng của bạn</h1>
+              <p className="text-gray-500">Bạn đang có <span className="font-bold text-tea-dark">{cart.length}</span> sản phẩm trong giỏ hàng.</p>
             </div>
             <div className="flex items-center gap-6">
               <button 
@@ -38,7 +38,7 @@ export default function Cart() {
               >
                 <Trash size={14} /> Xóa toàn bộ
               </button>
-              <Link to="/shop" className="text-sm font-bold text-[#1f3d2b] border-b-2 border-[#1f3d2b] pb-1 hover:opacity-70 transition-opacity">
+              <Link to="/shop" className="text-sm font-bold text-tea-dark border-b-2 border-tea-dark pb-1 hover:opacity-70 transition-opacity">
                 Tiếp tục mua sắm
               </Link>
             </div>
@@ -71,7 +71,7 @@ export default function Cart() {
                           <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                         </div>
                         <div className="space-y-1">
-                          <h3 className="font-serif font-bold text-[#1f3d2b] text-lg">{item.name}</h3>
+                          <h3 className="font-serif font-bold text-tea-dark text-lg">{item.name}</h3>
                           <p className="text-xs text-gray-400">Đơn giá: {formatPrice(item.price)}</p>
                           <button
                             onClick={() => removeFromCart(item.id)}
@@ -86,14 +86,14 @@ export default function Cart() {
                         <div className="flex items-center border border-gray-200 rounded-full p-1 bg-white">
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="p-1.5 hover:bg-gray-50 rounded-full transition-colors text-[#1f3d2b]"
+                            className="p-1.5 hover:bg-gray-50 rounded-full transition-colors text-tea-dark"
                           >
                             <Minus size={14} />
                           </button>
-                          <span className="w-8 text-center text-sm font-bold text-[#1f3d2b]">{item.quantity}</span>
+                          <span className="w-8 text-center text-sm font-bold text-tea-dark">{item.quantity}</span>
                           <button
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="p-1.5 hover:bg-gray-50 rounded-full transition-colors text-[#1f3d2b]"
+                            className="p-1.5 hover:bg-gray-50 rounded-full transition-colors text-tea-dark"
                           >
                             <Plus size={14} />
                           </button>
@@ -104,7 +104,7 @@ export default function Cart() {
                         {formatPrice(item.price)}
                       </div>
 
-                      <div className="text-right font-bold text-[#1f3d2b] text-lg">
+                      <div className="text-right font-bold text-tea-dark text-lg">
                         {formatPrice(item.price * item.quantity)}
                       </div>
                     </motion.div>
@@ -114,7 +114,7 @@ export default function Cart() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8">
                 <div className="p-8 rounded-3xl bg-[#f5f2ed] space-y-4">
-                  <div className="flex items-center gap-3 text-[#1f3d2b]">
+                  <div className="flex items-center gap-3 text-tea-dark">
                     <Truck size={20} />
                     <h3 className="font-bold">Thông tin giao hàng</h3>
                   </div>
@@ -123,7 +123,7 @@ export default function Cart() {
                   </p>
                 </div>
                 <div className="p-8 rounded-3xl bg-[#f5f2ed] space-y-4">
-                  <div className="flex items-center gap-3 text-[#1f3d2b]">
+                  <div className="flex items-center gap-3 text-tea-dark">
                     <ShieldCheck size={20} />
                     <h3 className="font-bold">Thanh toán an toàn</h3>
                   </div>
@@ -137,21 +137,21 @@ export default function Cart() {
             {/* Summary */}
             <div className="space-y-8">
               <div className="bg-white p-8 rounded-[40px] shadow-2xl border border-gray-100 space-y-8 sticky top-32">
-                <h3 className="text-2xl font-serif font-bold text-[#1f3d2b] border-b border-gray-100 pb-6">Tổng đơn hàng</h3>
+                <h3 className="text-2xl font-serif font-bold text-tea-dark border-b border-gray-100 pb-6">Tổng đơn hàng</h3>
                 
                 <div className="space-y-4">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">Tạm tính</span>
-                    <span className="font-bold text-[#1f3d2b]">{formatPrice(totalPrice)}</span>
+                    <span className="font-bold text-tea-dark">{formatPrice(totalPrice)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-500">Phí vận chuyển</span>
-                    <span className="font-bold text-[#1f3d2b]">{shipping === 0 ? 'Miễn phí' : formatPrice(shipping)}</span>
+                    <span className="font-bold text-tea-dark">{shipping === 0 ? 'Miễn phí' : formatPrice(shipping)}</span>
                   </div>
                   <div className="pt-4 border-t border-gray-100 flex justify-between items-end">
-                    <span className="text-lg font-serif font-bold text-[#1f3d2b]">Tổng cộng</span>
+                    <span className="text-lg font-serif font-bold text-tea-dark">Tổng cộng</span>
                     <div className="text-right">
-                      <p className="text-2xl font-bold text-[#1f3d2b]">{formatPrice(total)}</p>
+                      <p className="text-2xl font-bold text-tea-dark">{formatPrice(total)}</p>
                       <p className="text-[10px] text-gray-400 uppercase tracking-widest font-bold">(Đã bao gồm VAT)</p>
                     </div>
                   </div>
@@ -160,7 +160,7 @@ export default function Cart() {
                 <div className="space-y-4 pt-4">
                   <Link 
                     to="/checkout"
-                    className="w-full bg-[#1f3d2b] text-white py-5 rounded-full font-bold uppercase tracking-widest hover:bg-opacity-90 transition-all shadow-xl shadow-[#1f3d2b]/20 flex items-center justify-center gap-3"
+                    className="w-full bg-tea-primary text-white py-5 rounded-full font-bold uppercase tracking-widest hover:bg-opacity-90 transition-all shadow-xl shadow-tea-primary/20 flex items-center justify-center gap-3"
                   >
                     Tiến hành thanh toán <ArrowRight size={18} />
                   </Link>
@@ -176,15 +176,15 @@ export default function Cart() {
         ) : (
           <div className="py-32 text-center space-y-8">
             <div className="w-32 h-32 bg-[#f5f2ed] rounded-full flex items-center justify-center mx-auto">
-              <ShoppingBag size={48} className="text-[#1f3d2b]/20" />
+              <ShoppingBag size={48} className="text-tea-dark/20" />
             </div>
             <div className="space-y-2">
-              <h2 className="text-3xl font-serif font-bold text-[#1f3d2b]">Giỏ hàng trống</h2>
+              <h2 className="text-3xl font-serif font-bold text-tea-dark">Giỏ hàng trống</h2>
               <p className="text-gray-500">Có vẻ như bạn chưa chọn được phẩm trà nào ưng ý.</p>
             </div>
             <Link
               to="/shop"
-              className="inline-block bg-[#1f3d2b] text-white px-12 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-opacity-90 transition-all shadow-xl shadow-[#1f3d2b]/20"
+              className="inline-block bg-tea-primary text-white px-12 py-4 rounded-full font-bold uppercase tracking-widest hover:bg-opacity-90 transition-all shadow-xl shadow-tea-primary/20"
             >
               Khám phá ngay
             </Link>
@@ -212,7 +212,7 @@ export default function Cart() {
                 <Trash2 size={40} />
               </div>
               <div className="space-y-2">
-                <h3 className="text-2xl font-serif font-bold text-[#1f3d2b]">Xóa giỏ hàng?</h3>
+                <h3 className="text-2xl font-serif font-bold text-tea-dark">Xóa giỏ hàng?</h3>
                 <p className="text-gray-500">Bạn có chắc chắn muốn xóa tất cả sản phẩm khỏi giỏ hàng không?</p>
               </div>
               <div className="grid grid-cols-2 gap-4 pt-4">
