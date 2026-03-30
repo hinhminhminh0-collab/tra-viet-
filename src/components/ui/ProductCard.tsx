@@ -9,18 +9,21 @@ import { doc, updateDoc } from 'firebase/firestore';
 import { toast } from 'sonner';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
+import { useTranslation } from 'react-i18next';
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState({
     name: product.name,
     price: product.price,
     category: product.category,
-    imageUrl: product.images[0]
+    imageUrl: product.images[0],
+    stock: product.stock
   });
   const [isSaving, setIsSaving] = useState(false);
 
@@ -41,7 +44,8 @@ export default function ProductCard({ product }: ProductCardProps) {
         name: editData.name,
         price: editData.price,
         category: editData.category,
-        images: [editData.imageUrl]
+        images: [editData.imageUrl],
+        stock: editData.stock
       });
       toast.success("Cập nhật sản phẩm thành công!");
       setIsEditing(false);
@@ -96,30 +100,36 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         </Link>
 
-        <div className="p-3 space-y-2">
+        <div className="p-2.5 space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-[8px] uppercase tracking-widest text-gray-400 font-bold">
+            <span className="text-[7px] uppercase tracking-widest text-gray-400 font-bold">
               {product.category}
             </span>
             <div className="flex items-center gap-0.5 text-yellow-500">
-              <Star size={10} fill="currentColor" />
-              <span className="text-[10px] font-medium text-gray-600">{product.rating}</span>
+              <Star size={8} fill="currentColor" />
+              <span className="text-[9px] font-medium text-gray-600">{product.rating}</span>
             </div>
           </div>
           
           <Link to={`/product/${product.id}`} className="block">
-            <h3 className="text-sm font-serif font-bold text-[#1f3d2b] hover:opacity-70 transition-opacity line-clamp-1">
+            <h3 className="text-xs font-serif font-bold text-[#1f3d2b] hover:opacity-70 transition-opacity line-clamp-1">
               {product.name}
             </h3>
+            <p className={cn(
+              "text-[9px] font-medium mt-0.5",
+              product.stock < 10 ? "text-red-500" : "text-gray-500"
+            )}>
+              {t('common.stock')}: {product.stock}
+            </p>
           </Link>
           
-          <div className="flex items-center justify-between pt-1">
-            <span className="text-sm font-bold text-[#1f3d2b]">
+          <div className="flex items-center justify-between pt-0.5">
+            <span className="text-xs font-bold text-[#1f3d2b]">
               {formatPrice(product.price)}
             </span>
             <button 
               onClick={handleBuyNow}
-              className="text-[10px] font-bold text-[#1f3d2b] underline underline-offset-2 hover:opacity-70 transition-opacity"
+              className="text-[9px] font-bold text-[#1f3d2b] underline underline-offset-2 hover:opacity-70 transition-opacity"
             >
               Mua
             </button>
@@ -191,13 +201,22 @@ export default function ProductCard({ product }: ProductCardProps) {
                   )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <label className="text-[10px] font-bold text-[#1f3d2b] uppercase tracking-widest">Giá (VNĐ)</label>
                     <input
                       type="number"
                       value={editData.price}
                       onChange={(e) => setEditData({ ...editData, price: Number(e.target.value) })}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-bold text-[#1f3d2b] uppercase tracking-widest">Kho</label>
+                    <input
+                      type="number"
+                      value={editData.stock}
+                      onChange={(e) => setEditData({ ...editData, stock: Number(e.target.value) })}
                       className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-[#1f3d2b] transition-colors"
                     />
                   </div>

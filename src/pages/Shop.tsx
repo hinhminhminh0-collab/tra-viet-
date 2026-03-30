@@ -72,7 +72,7 @@ const SAMPLE_PRODUCTS = [
     reviewsCount: 12
   },
   {
-    name: "Chè Vằng Sẻ Quảng Trị",
+    name: "Chè Vằng ",
     price: 150000,
     category: "Trà thảo mộc",
     origin: "Quảng Trị",
@@ -257,156 +257,152 @@ export default function Shop() {
         </div>
       </section>
 
-      {/* Toolbar */}
-      <section className="sticky top-[72px] z-40 bg-white border-b border-gray-100 px-6 py-4 shadow-sm">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="relative w-full md:w-96">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input
-              type="text"
-              placeholder="Tìm kiếm sản phẩm..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-gray-50 border border-gray-200 rounded-full pl-12 pr-4 py-2.5 text-sm focus:outline-none focus:border-[#1f3d2b] transition-colors"
-            />
-          </div>
-
-          <div className="flex items-center gap-4 w-full md:w-auto">
-            <button
-              onClick={() => setIsFilterOpen(!isFilterOpen)}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-full border border-gray-200 text-sm font-medium hover:bg-gray-50 transition-colors"
-            >
-              <SlidersHorizontal size={16} />
-              Lọc & Sắp xếp
-            </button>
-            <div className="hidden md:flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-              {CATEGORIES.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={cn(
-                    "whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all",
-                    selectedCategory === cat ? "bg-[#1f3d2b] text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-                  )}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Expanded Filters */}
-        <AnimatePresence>
-          {isFilterOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="overflow-hidden"
-            >
-              <div className="max-w-7xl mx-auto pt-6 pb-2 grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-gray-100 mt-4">
-                <div className="space-y-4">
-                  <h3 className="text-sm font-bold text-[#1f3d2b] uppercase tracking-widest">Sắp xếp theo</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      { id: 'newest', label: 'Mới nhất' },
-                      { id: 'price-low', label: 'Giá thấp đến cao' },
-                      { id: 'price-high', label: 'Giá cao đến thấp' },
-                      { id: 'rating', label: 'Đánh giá cao nhất' },
-                    ].map(sort => (
-                      <button
-                        key={sort.id}
-                        onClick={() => setSortBy(sort.id)}
-                        className={cn(
-                          "px-4 py-2 rounded-xl text-sm transition-all",
-                          sortBy === sort.id ? "bg-[#1f3d2b] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                        )}
-                      >
-                        {sort.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-sm font-bold text-[#1f3d2b] uppercase tracking-widest">Khoảng giá</h3>
-                  <div className="flex items-center gap-4">
-                    <input type="number" placeholder="Từ" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm" />
-                    <span className="text-gray-400">-</span>
-                    <input type="number" placeholder="Đến" className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2 text-sm" />
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <h3 className="text-sm font-bold text-[#1f3d2b] uppercase tracking-widest">Xuất xứ</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {['Hà Giang', 'Yên Bái', 'Thái Nguyên', 'Lâm Đồng', 'Điện Biên'].map(origin => (
-                      <button key={origin} className="px-4 py-2 rounded-xl text-sm bg-gray-100 text-gray-600 hover:bg-gray-200">
-                        {origin}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+      {/* Main Content Area */}
+      <section className="py-12 px-6">
+        <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12">
+          
+          {/* Product Grid (Left) */}
+          <div className="flex-1 order-2 lg:order-1">
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-4">
+                <p className="text-sm text-gray-500">
+                  Hiển thị <span className="font-bold text-[#1f3d2b]">{filteredProducts.length}</span> sản phẩm
+                </p>
+                {isAdmin && products.length === 0 && (
+                  <button
+                    onClick={handleSeed}
+                    disabled={isSeeding}
+                    className="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-widest hover:opacity-70 disabled:opacity-50"
+                  >
+                    {isSeeding ? "Đang thêm..." : "Thêm 15 sản phẩm mẫu"} <Plus size={14} />
+                  </button>
+                )}
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </section>
-
-      {/* Product Grid */}
-      <section className="py-16 px-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-4">
-              <p className="text-sm text-gray-500">
-                Hiển thị <span className="font-bold text-[#1f3d2b]">{filteredProducts.length}</span> sản phẩm
-              </p>
-              {isAdmin && products.length === 0 && (
+              {selectedCategory !== 'Tất cả' && (
                 <button
-                  onClick={handleSeed}
-                  disabled={isSeeding}
-                  className="flex items-center gap-2 text-xs font-bold text-blue-600 uppercase tracking-widest hover:opacity-70 disabled:opacity-50"
+                  onClick={() => setSelectedCategory('Tất cả')}
+                  className="flex items-center gap-1 text-xs font-bold text-red-500 uppercase tracking-widest hover:opacity-70"
                 >
-                  {isSeeding ? "Đang thêm..." : "Thêm 15 sản phẩm mẫu"} <Plus size={14} />
+                  Xóa lọc <X size={14} />
                 </button>
               )}
             </div>
-            {selectedCategory !== 'Tất cả' && (
-              <button
-                onClick={() => setSelectedCategory('Tất cả')}
-                className="flex items-center gap-1 text-xs font-bold text-red-500 uppercase tracking-widest hover:opacity-70"
-              >
-                Xóa lọc <X size={14} />
-              </button>
+
+            {loading ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+                {[...Array(10)].map((_, i) => (
+                  <ProductSkeleton key={i} />
+                ))}
+              </div>
+            ) : filteredProducts.length > 0 ? (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+                {filteredProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
+            ) : (
+              <div className="py-32 text-center space-y-4">
+                <div className="text-6xl">🍃</div>
+                <h3 className="text-2xl font-serif font-bold text-[#1f3d2b]">Không tìm thấy sản phẩm nào</h3>
+                <p className="text-gray-500">Hãy thử thay đổi từ khóa hoặc bộ lọc của bạn.</p>
+                <button
+                  onClick={() => { setSearchQuery(''); setSelectedCategory('Tất cả'); }}
+                  className="bg-[#1f3d2b] text-white px-8 py-3 rounded-full font-bold uppercase tracking-widest"
+                >
+                  Xem tất cả sản phẩm
+                </button>
+              </div>
             )}
           </div>
 
-          {loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-              {[...Array(10)].map((_, i) => (
-                <ProductSkeleton key={i} />
-              ))}
+          {/* Sidebar (Right) */}
+          <aside className="w-full lg:w-72 space-y-10 order-1 lg:order-2">
+            {/* Search */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-bold text-[#1f3d2b] uppercase tracking-widest border-b border-gray-100 pb-2">
+                Tìm kiếm
+              </h3>
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                <input
+                  type="text"
+                  placeholder="Tìm sản phẩm..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-white border border-gray-200 rounded-xl pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                />
+              </div>
             </div>
-          ) : filteredProducts.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
+
+            {/* Categories */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-bold text-[#1f3d2b] uppercase tracking-widest border-b border-gray-100 pb-2">
+                Danh mục
+              </h3>
+              <div className="flex flex-col gap-1">
+                {CATEGORIES.map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={cn(
+                      "text-left px-4 py-2 rounded-lg text-sm transition-all",
+                      selectedCategory === cat 
+                        ? "bg-[#1f3d2b] text-white font-medium" 
+                        : "text-gray-600 hover:bg-gray-100"
+                    )}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
             </div>
-          ) : (
-            <div className="py-32 text-center space-y-4">
-              <div className="text-6xl">🍃</div>
-              <h3 className="text-2xl font-serif font-bold text-[#1f3d2b]">Không tìm thấy sản phẩm nào</h3>
-              <p className="text-gray-500">Hãy thử thay đổi từ khóa hoặc bộ lọc của bạn.</p>
-              <button
-                onClick={() => { setSearchQuery(''); setSelectedCategory('Tất cả'); }}
-                className="bg-[#1f3d2b] text-white px-8 py-3 rounded-full font-bold uppercase tracking-widest"
-              >
-                Xem tất cả sản phẩm
-              </button>
+
+            {/* Sort */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-bold text-[#1f3d2b] uppercase tracking-widest border-b border-gray-100 pb-2">
+                Sắp xếp
+              </h3>
+              <div className="flex flex-col gap-1">
+                {[
+                  { id: 'newest', label: 'Mới nhất' },
+                  { id: 'price-low', label: 'Giá thấp đến cao' },
+                  { id: 'price-high', label: 'Giá cao đến thấp' },
+                  { id: 'rating', label: 'Đánh giá cao nhất' },
+                ].map(sort => (
+                  <button
+                    key={sort.id}
+                    onClick={() => setSortBy(sort.id)}
+                    className={cn(
+                      "text-left px-4 py-2 rounded-lg text-sm transition-all",
+                      sortBy === sort.id 
+                        ? "bg-[#1f3d2b] text-white font-medium" 
+                        : "text-gray-600 hover:bg-gray-100"
+                    )}
+                  >
+                    {sort.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          )}
+
+            {/* Origins */}
+            <div className="space-y-4">
+              <h3 className="text-xs font-bold text-[#1f3d2b] uppercase tracking-widest border-b border-gray-100 pb-2">
+                Xuất xứ
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {['Hà Giang', 'Yên Bái', 'Thái Nguyên', 'Lâm Đồng', 'Điện Biên'].map(origin => (
+                  <button 
+                    key={origin} 
+                    className="px-3 py-1.5 rounded-lg text-xs bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+                  >
+                    {origin}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </aside>
+
         </div>
       </section>
 

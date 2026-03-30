@@ -10,7 +10,7 @@ const BLOG_POSTS = [
     excerpt: 'Làm thế nào để đánh thức hương vị tinh túy nhất của những búp trà Shan Tuyết hàng trăm năm tuổi?',
     image: 'https://picsum.photos/seed/blog1/800/600',
     category: 'Hướng dẫn',
-    author: 'Trần Văn Trà',
+    author: 'Hoàng Minh Nghĩa',
     date: '25/03/2026'
   },
   {

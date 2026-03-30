@@ -58,7 +58,7 @@ const products = [
     reviewsCount: 12
   },
   {
-    name: "Chè Vằng Sẻ Quảng Trị",
+    name: "Chè Vằng ",
     price: 150000,
     category: "Trà thảo mộc",
     origin: "Quảng Trị",

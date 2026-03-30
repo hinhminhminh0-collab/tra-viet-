@@ -138,176 +138,223 @@ export default function AdminProducts() {
       <Header />
       
       <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-12">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-8">
           <div className="space-y-2">
-            <Link to="/profile" className="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-widest hover:text-[#1f3d2b] transition-colors mb-4">
-              <ArrowLeft size={14} /> Quay lại Profile
+            <Link to="/profile" className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest hover:text-[#1f3d2b] transition-colors mb-2">
+              <ArrowLeft size={12} /> Quay lại Profile
             </Link>
-            <h1 className="text-4xl font-serif font-bold text-[#1f3d2b]">Quản lý sản phẩm</h1>
-            <p className="text-gray-500">Chỉnh sửa thông tin và giá cả của các phẩm trà.</p>
-          </div>
-          
-          <div className="flex items-center gap-4 w-full md:w-auto">
-            <div className="relative flex-1 md:w-80">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-              <input
-                type="text"
-                placeholder="Tìm kiếm sản phẩm..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white border border-gray-200 rounded-full pl-12 pr-4 py-3 text-sm focus:outline-none focus:border-[#1f3d2b] transition-colors"
-              />
-            </div>
-            <button 
-              onClick={() => setIsAdding(true)}
-              className="bg-[#1f3d2b] text-white px-6 py-3 rounded-full font-bold uppercase tracking-widest flex items-center gap-2 hover:bg-opacity-90 transition-all shadow-lg shadow-[#1f3d2b]/10"
-            >
-              <Plus size={18} /> Thêm mới
-            </button>
+            <h1 className="text-3xl font-serif font-bold text-[#1f3d2b]">Quản lý sản phẩm</h1>
+            <p className="text-sm text-gray-500">Chỉnh sửa thông tin và giá cả của các phẩm trà.</p>
           </div>
         </div>
 
-        <div className="bg-white rounded-[40px] shadow-2xl border border-gray-100 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-gray-50 border-b border-gray-100">
-                  <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-gray-400">Sản phẩm</th>
-                  <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-gray-400">Danh mục</th>
-                  <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-gray-400">Giá (VNĐ)</th>
-                  <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-gray-400">Kho</th>
-                  <th className="px-8 py-6 text-[10px] font-bold uppercase tracking-widest text-gray-400 text-right">Thao tác</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50">
-                <AnimatePresence mode="popLayout">
-                  {filteredProducts.map((product) => (
-                    <motion.tr 
-                      key={product.id}
-                      layout
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="hover:bg-gray-50/50 transition-colors"
-                    >
-                      <td className="px-8 py-6">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-100 border border-gray-100 shrink-0">
-                            <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
-                          </div>
-                          {editingId === product.id ? (
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Product Table */}
+          <div className="lg:col-span-3">
+            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-gray-50 border-b border-gray-100">
+                      <th className="px-4 py-4 text-[9px] font-bold uppercase tracking-widest text-gray-400">Sản phẩm</th>
+                      <th className="px-4 py-4 text-[9px] font-bold uppercase tracking-widest text-gray-400">Danh mục</th>
+                      <th className="px-4 py-4 text-[9px] font-bold uppercase tracking-widest text-gray-400">Giá (VNĐ)</th>
+                      <th className="px-4 py-4 text-[9px] font-bold uppercase tracking-widest text-gray-400">Kho</th>
+                      <th className="px-4 py-4 text-[9px] font-bold uppercase tracking-widest text-gray-400 text-right">Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-50">
+                    <AnimatePresence mode="popLayout">
+                      {filteredProducts.map((product) => (
+                        <motion.tr 
+                          key={product.id}
+                          layout
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="hover:bg-gray-50/50 transition-colors"
+                        >
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg overflow-hidden bg-gray-100 border border-gray-100 shrink-0">
+                                <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
+                              </div>
+                              {editingId === product.id ? (
+                                <input
+                                  type="text"
+                                  value={editForm.name}
+                                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                                  className="bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs font-bold text-[#1f3d2b] w-full"
+                                />
+                              ) : (
+                                <span className="text-xs font-bold text-[#1f3d2b]">{product.name}</span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            {editingId === product.id ? (
+                              <select
+                                value={editForm.category}
+                                onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
+                                className="bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs"
+                              >
+                                {['Bạch trà', 'Hồng trà', 'Lục trà', 'Oolong', 'Phổ Nhĩ', 'Trà thảo mộc'].map(cat => (
+                                  <option key={cat} value={cat}>{cat}</option>
+                                ))}
+                              </select>
+                            ) : (
+                              <span className="text-[9px] font-bold text-gray-500 uppercase tracking-widest bg-gray-100 px-1.5 py-0.5 rounded">
+                                {product.category}
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex items-center gap-1.5">
+                              <input
+                                type="number"
+                                defaultValue={product.price}
+                                onBlur={(e) => {
+                                  const val = Number(e.target.value);
+                                  if (val !== product.price) {
+                                    const docRef = doc(db, 'products', product.id);
+                                    updateDoc(docRef, { price: val });
+                                    toast.success("Đã cập nhật giá!");
+                                  }
+                                }}
+                                className="w-24 bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs font-bold text-[#1f3d2b] focus:border-[#1f3d2b] focus:outline-none"
+                              />
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
                             <input
-                              type="text"
-                              value={editForm.name}
-                              onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                              className="bg-white border border-gray-200 rounded-lg px-3 py-1 text-sm font-bold text-[#1f3d2b]"
+                              type="number"
+                              defaultValue={product.stock}
+                              onBlur={(e) => {
+                                const val = Number(e.target.value);
+                                if (val !== product.stock) {
+                                  const docRef = doc(db, 'products', product.id);
+                                  updateDoc(docRef, { stock: val });
+                                  toast.success("Đã cập nhật số lượng tồn kho!");
+                                }
+                              }}
+                              className={cn(
+                                "w-16 bg-white border border-gray-200 rounded-lg px-2 py-1 text-xs focus:border-[#1f3d2b] focus:outline-none",
+                                product.stock < 10 ? "text-red-500 font-bold" : "text-gray-600"
+                              )}
                             />
-                          ) : (
-                            <span className="font-bold text-[#1f3d2b]">{product.name}</span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-8 py-6">
-                        {editingId === product.id ? (
-                          <select
-                            value={editForm.category}
-                            onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
-                            className="bg-white border border-gray-200 rounded-lg px-3 py-1 text-sm"
-                          >
-                            {['Bạch trà', 'Hồng trà', 'Lục trà', 'Oolong', 'Phổ Nhĩ', 'Trà thảo mộc'].map(cat => (
-                              <option key={cat} value={cat}>{cat}</option>
-                            ))}
-                          </select>
-                        ) : (
-                          <span className="text-xs font-bold text-gray-500 uppercase tracking-widest bg-gray-100 px-2 py-1 rounded">
-                            {product.category}
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-8 py-6">
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="number"
-                            defaultValue={product.price}
-                            onBlur={(e) => {
-                              const val = Number(e.target.value);
-                              if (val !== product.price) {
-                                const docRef = doc(db, 'products', product.id);
-                                updateDoc(docRef, { price: val });
-                                toast.success("Đã cập nhật giá!");
-                              }
-                            }}
-                            className="w-32 bg-white border border-gray-200 rounded-lg px-3 py-1 text-sm font-bold text-[#1f3d2b] focus:border-[#1f3d2b] focus:outline-none"
-                          />
-                          <span className="text-[10px] text-gray-400 font-bold">VNĐ</span>
-                        </div>
-                      </td>
-                      <td className="px-8 py-6">
-                        <input
-                          type="number"
-                          defaultValue={product.stock}
-                          onBlur={(e) => {
-                            const val = Number(e.target.value);
-                            if (val !== product.stock) {
-                              const docRef = doc(db, 'products', product.id);
-                              updateDoc(docRef, { stock: val });
-                              toast.success("Đã cập nhật số lượng tồn kho!");
-                            }
-                          }}
-                          className={cn(
-                            "w-20 bg-white border border-gray-200 rounded-lg px-3 py-1 text-sm focus:border-[#1f3d2b] focus:outline-none",
-                            product.stock < 10 ? "text-red-500 font-bold" : "text-gray-600"
-                          )}
-                        />
-                      </td>
-                      <td className="px-8 py-6 text-right">
-                        <div className="flex items-center justify-end gap-3">
-                          {editingId === product.id ? (
-                            <>
-                              <button 
-                                onClick={() => handleSave(product.id)}
-                                className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                              >
-                                <Save size={18} />
-                              </button>
-                              <button 
-                                onClick={() => setEditingId(null)}
-                                className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors"
-                              >
-                                <X size={18} />
-                              </button>
-                            </>
-                          ) : (
-                            <>
-                              <button 
-                                onClick={() => handleEdit(product)}
-                                className="p-2 text-gray-400 hover:text-[#1f3d2b] hover:bg-white rounded-lg transition-colors"
-                              >
-                                <Edit2 size={18} />
-                              </button>
-                              <button 
-                                onClick={() => handleDelete(product.id)}
-                                className="p-2 text-gray-400 hover:text-red-500 hover:bg-white rounded-lg transition-colors"
-                              >
-                                <Trash2 size={18} />
-                              </button>
-                            </>
-                          )}
-                        </div>
-                      </td>
-                    </motion.tr>
-                  ))}
-                </AnimatePresence>
-              </tbody>
-            </table>
-          </div>
-          
-          {filteredProducts.length === 0 && !loading && (
-            <div className="py-20 text-center space-y-4">
-              <Package className="mx-auto text-gray-200" size={64} />
-              <p className="text-gray-400">Không tìm thấy sản phẩm nào.</p>
+                          </td>
+                          <td className="px-4 py-3 text-right">
+                            <div className="flex items-center justify-end gap-2">
+                              {editingId === product.id ? (
+                                <>
+                                  <button 
+                                    onClick={() => handleSave(product.id)}
+                                    className="p-1.5 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                                  >
+                                    <Save size={14} />
+                                  </button>
+                                  <button 
+                                    onClick={() => setEditingId(null)}
+                                    className="p-1.5 text-gray-400 hover:bg-gray-100 rounded-lg transition-colors"
+                                  >
+                                    <X size={14} />
+                                  </button>
+                                </>
+                              ) : (
+                                <>
+                                  <button 
+                                    onClick={() => handleEdit(product)}
+                                    className="p-1.5 text-gray-400 hover:text-[#1f3d2b] hover:bg-white rounded-lg transition-colors"
+                                  >
+                                    <Edit2 size={14} />
+                                  </button>
+                                  <button 
+                                    onClick={() => handleDelete(product.id)}
+                                    className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-white rounded-lg transition-colors"
+                                  >
+                                    <Trash2 size={14} />
+                                  </button>
+                                </>
+                              )}
+                            </div>
+                          </td>
+                        </motion.tr>
+                      ))}
+                    </AnimatePresence>
+                  </tbody>
+                </table>
+              </div>
+              
+              {filteredProducts.length === 0 && !loading && (
+                <div className="py-20 text-center space-y-4">
+                  <Package className="mx-auto text-gray-200" size={48} />
+                  <p className="text-xs text-gray-400">Không tìm thấy sản phẩm nào.</p>
+                </div>
+              )}
             </div>
-          )}
+          </div>
+
+          {/* Sidebar */}
+          <div className="lg:col-span-1 space-y-6">
+            <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-6">
+              <button 
+                onClick={() => setIsAdding(true)}
+                className="w-full bg-[#1f3d2b] text-white py-3.5 rounded-xl font-bold uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-opacity-90 transition-all shadow-lg shadow-[#1f3d2b]/10 text-xs"
+              >
+                <Plus size={16} /> Thêm sản phẩm
+              </button>
+
+              <div className="space-y-4 pt-4 border-t border-gray-50">
+                <div className="space-y-2">
+                  <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Tìm kiếm</label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+                    <input
+                      type="text"
+                      placeholder="Tên sản phẩm..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full bg-gray-50 border border-gray-100 rounded-xl pl-9 pr-4 py-2.5 text-xs focus:outline-none focus:border-[#1f3d2b] transition-colors"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Danh mục</label>
+                  <div className="grid grid-cols-1 gap-1">
+                    {['Tất cả', 'Bạch trà', 'Hồng trà', 'Lục trà', 'Oolong', 'Phổ Nhĩ', 'Trà thảo mộc'].map(cat => (
+                      <button
+                        key={cat}
+                        onClick={() => setSearchQuery(cat === 'Tất cả' ? '' : cat)}
+                        className={cn(
+                          "text-left px-3 py-2 rounded-lg text-[10px] font-bold transition-all uppercase tracking-wider",
+                          (searchQuery === cat || (cat === 'Tất cả' && searchQuery === ''))
+                            ? "bg-[#1f3d2b] text-white"
+                            : "text-gray-500 hover:bg-gray-50"
+                        )}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-[#f5f2ed] p-6 rounded-3xl border border-dashed border-gray-200 text-center space-y-2">
+              <p className="text-[10px] font-bold text-[#1f3d2b] uppercase tracking-widest">Thống kê nhanh</p>
+              <div className="grid grid-cols-2 gap-4 pt-2">
+                <div>
+                  <p className="text-lg font-serif font-bold text-[#1f3d2b]">{products.length}</p>
+                  <p className="text-[8px] text-gray-400 uppercase font-bold">Sản phẩm</p>
+                </div>
+                <div>
+                  <p className="text-lg font-serif font-bold text-red-500">{products.filter(p => p.stock < 10).length}</p>
+                  <p className="text-[8px] text-gray-400 uppercase font-bold">Sắp hết hàng</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
 

@@ -9,6 +9,7 @@ import TeaQuiz from '../components/ui/TeaQuiz';
 import { Product } from '../types';
 import { db } from '../firebase';
 import { collection, query, limit, getDocs, orderBy } from 'firebase/firestore';
+import { useTranslation } from 'react-i18next';
 
 const CATEGORIES = [
   { name: 'Bạch trà', image: 'https://picsum.photos/seed/cat1/600/800', count: 12 },
@@ -18,6 +19,7 @@ const CATEGORIES = [
 ];
 
 export default function Home() {
+  const { t } = useTranslation();
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -69,10 +71,10 @@ export default function Home() {
             className="space-y-4"
           >
             <span className="text-xs font-bold uppercase tracking-[0.3em] opacity-80">
-              Tinh hoa trà Việt
+              {t('hero.subtitle')}
             </span>
             <h1 className="text-5xl md:text-7xl font-serif font-bold leading-tight">
-              Chạm vào hơi thở <br /> của núi rừng
+              {t('hero.title')}
             </h1>
           </motion.div>
           
@@ -82,7 +84,7 @@ export default function Home() {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-lg md:text-xl text-white/80 max-w-2xl mx-auto font-light leading-relaxed"
           >
-            Khám phá những phẩm trà tinh túy nhất từ các vùng trà cổ thụ nghìn năm tuổi của Việt Nam. Nơi văn hóa trà đạo gặp gỡ sự tinh tế hiện đại.
+            {t('footer.description')}
           </motion.p>
           
           <motion.div
@@ -95,13 +97,13 @@ export default function Home() {
               to="/shop"
               className="bg-white text-[#1f3d2b] px-10 py-4 rounded-full font-bold text-sm uppercase tracking-widest hover:bg-[#1f3d2b] hover:text-white transition-all duration-500 shadow-xl"
             >
-              Mua ngay
+              {t('hero.cta')}
             </Link>
             <Link
               to="/about"
               className="text-white border border-white/30 px-10 py-4 rounded-full font-bold text-sm uppercase tracking-widest hover:bg-white/10 transition-all duration-500 backdrop-blur-sm"
             >
-              Câu chuyện trà
+              {t('nav.about')}
             </Link>
           </motion.div>
         </div>
@@ -118,7 +120,7 @@ export default function Home() {
             { icon: <Leaf />, title: "100% Tự nhiên", desc: "Trà sạch từ vùng cao" },
             { icon: <ShieldCheck />, title: "Chất lượng", desc: "Kiểm định nghiêm ngặt" },
             { icon: <Truck />, title: "Giao hàng nhanh", desc: "Toàn quốc 2-3 ngày" },
-            { icon: <Clock />, title: "Hỗ trợ 24/7", desc: "Tư vấn trà đạo" },
+            { icon: <Clock />, title: "Hỗ trợ 24/7", desc: "Hotline: 0898992654" },
           ].map((item, i) => (
             <div key={i} className="flex flex-col items-center text-center space-y-3 group">
               <div className="p-4 rounded-full bg-[#f5f2ed] text-[#1f3d2b] group-hover:bg-[#1f3d2b] group-hover:text-white transition-all duration-500">
@@ -218,9 +220,16 @@ export default function Home() {
                 "Trà không chỉ là thức uống, trà là hơi thở, là sự tĩnh lặng giữa dòng đời hối hả."
               </p>
               <div className="mt-4 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#1f3d2b]" />
+                <div className="w-10 h-10 rounded-full overflow-hidden bg-[#1f3d2b]">
+                  <img 
+                    src="https://api.dicebear.com/7.x/avataaars/svg?seed=HoangMinhNghia" 
+                    alt="Hoàng Minh Nghĩa" 
+                    className="w-full h-full object-cover"
+                    referrerPolicy="no-referrer"
+                  />
+                </div>
                 <div>
-                  <p className="text-xs font-bold text-[#1f3d2b]">Trần Văn Trà</p>
+                  <p className="text-xs font-bold text-[#1f3d2b]">Hoàng Minh Nghĩa</p>
                   <p className="text-[10px] text-gray-400">Nghệ nhân trà đạo</p>
                 </div>
               </div>

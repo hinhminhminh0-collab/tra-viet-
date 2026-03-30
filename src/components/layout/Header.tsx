@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ShoppingCart, User, Menu, X, Search, Heart, Package, ArrowUp, ArrowRight } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, Search, Heart, Package, ArrowUp, ArrowRight, Languages } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import { cn } from '../../lib/utils';
+import { useTranslation } from 'react-i18next';
 
 export default function Header() {
+  const { t, i18n } = useTranslation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -39,12 +41,16 @@ export default function Header() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const toggleLanguage = () => {
+    const newLang = i18n.language === 'vi' ? 'en' : 'vi';
+    i18n.changeLanguage(newLang);
+  };
+
   const navLinks = [
-    { name: 'Trang chủ', path: '/' },
-    { name: 'Sản phẩm', path: '/shop' },
-    { name: 'Kiến thức trà', path: '/blog' },
-    { name: 'Về chúng tôi', path: '/about' },
-    { name: 'Liên hệ', path: '/contact' },
+    { name: t('nav.home'), path: '/' },
+    { name: t('nav.shop'), path: '/shop' },
+    { name: t('nav.about'), path: '/about' },
+    { name: t('nav.contact'), path: '/contact' },
   ];
 
   return (
@@ -204,21 +210,42 @@ export default function Header() {
                 {link.name}
               </Link>
             ))}
-            <div className="flex items-center gap-6 pt-4">
-              <Link to="/cart" onClick={() => setIsMenuOpen(false)} className="text-[#1f3d2b]">
-                <ShoppingCart size={24} />
-              </Link>
-              <Link to="/wishlist" onClick={() => setIsMenuOpen(false)} className="text-[#1f3d2b]">
-                <Heart size={24} />
-              </Link>
-              {isAdmin && (
-                <Link to="/admin/orders" onClick={() => setIsMenuOpen(false)} className="text-[#1f3d2b]">
-                  <Package size={24} />
+            <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+              <div className="flex items-center gap-6">
+                <Link to="/cart" onClick={() => setIsMenuOpen(false)} className="text-[#1f3d2b]">
+                  <ShoppingCart size={24} />
                 </Link>
-              )}
-              <Link to={user ? "/profile" : "/auth"} onClick={() => setIsMenuOpen(false)} className="text-[#1f3d2b]">
-                <User size={24} />
-              </Link>
+                <Link to="/wishlist" onClick={() => setIsMenuOpen(false)} className="text-[#1f3d2b]">
+                  <Heart size={24} />
+                </Link>
+                {isAdmin && (
+                  <Link to="/admin/orders" onClick={() => setIsMenuOpen(false)} className="text-[#1f3d2b]">
+                    <Package size={24} />
+                  </Link>
+                )}
+                <Link to={user ? "/profile" : "/auth"} onClick={() => setIsMenuOpen(false)} className="text-[#1f3d2b]">
+                  <User size={24} />
+                </Link>
+              </div>
+              <div className="flex items-center gap-3 flex-wrap">
+                {['vi', 'en', 'fr', 'ja', 'zh'].map((lang) => (
+                  <button
+                    key={lang}
+                    onClick={() => {
+                      i18n.changeLanguage(lang);
+                      setIsMenuOpen(false);
+                    }}
+                    className={cn(
+                      "px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest transition-colors",
+                      i18n.language === lang 
+                        ? "bg-[#1f3d2b] text-white" 
+                        : "bg-[#1f3d2b]/5 text-[#1f3d2b]"
+                    )}
+                  >
+                    {lang}
+                  </button>
+                ))}
+              </div>
             </div>
           </motion.div>
         )}
@@ -231,7 +258,7 @@ export default function Header() {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.5 }}
             onClick={scrollToTop}
-            className="fixed bottom-8 right-8 z-50 bg-[#1f3d2b] text-white p-4 rounded-full shadow-2xl hover:bg-black transition-all"
+            className="fixed bottom-2 right-4 z-50 bg-[#1f3d2b] text-white p-4 rounded-full shadow-2xl hover:bg-black transition-all"
           >
             <ArrowUp size={24} />
           </motion.button>

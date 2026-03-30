@@ -144,43 +144,14 @@ export default function AdminOrders() {
       <main className="pt-32 pb-24 px-6 max-w-7xl mx-auto space-y-12">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="space-y-2">
-            <h1 className="text-4xl font-serif font-bold text-[#1f3d2b]">Quản lý đơn hàng</h1>
-            <p className="text-gray-500">Xem và cập nhật trạng thái đơn hàng của khách hàng.</p>
-          </div>
-          
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-              <input 
-                type="text" 
-                placeholder="Tìm tên, SĐT, mã đơn..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-12 pr-6 py-3 bg-white border border-gray-200 rounded-full text-sm focus:outline-none focus:border-[#1f3d2b] w-full md:w-64"
-              />
-            </div>
-            
-            <div className="relative">
-              <select 
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="appearance-none pl-6 pr-12 py-3 bg-white border border-gray-200 rounded-full text-sm font-bold text-[#1f3d2b] focus:outline-none focus:border-[#1f3d2b] cursor-pointer"
-              >
-                <option value="all">Tất cả trạng thái</option>
-                <option value="pending">Chờ xử lý</option>
-                <option value="processing">Đang chuẩn bị</option>
-                <option value="shipped">Đang giao</option>
-                <option value="completed">Đã hoàn thành</option>
-                <option value="cancelled">Đã hủy</option>
-              </select>
-              <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-[#1f3d2b] pointer-events-none" size={16} />
-            </div>
+            <h1 className="text-3xl font-serif font-bold text-[#1f3d2b]">Quản lý đơn hàng</h1>
+            <p className="text-sm text-gray-500">Xem và cập nhật trạng thái đơn hàng của khách hàng.</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Orders List */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-3 space-y-3">
             {filteredOrders.length > 0 ? (
               filteredOrders.map((order) => (
                 <motion.div 
@@ -188,43 +159,43 @@ export default function AdminOrders() {
                   layoutId={order.id}
                   onClick={() => setSelectedOrder(order)}
                   className={cn(
-                    "bg-white p-6 rounded-3xl border transition-all cursor-pointer hover:shadow-lg",
-                    selectedOrder?.id === order.id ? "border-[#1f3d2b] shadow-md" : "border-gray-100"
+                    "bg-white p-4 rounded-2xl border transition-all cursor-pointer hover:shadow-md",
+                    selectedOrder?.id === order.id ? "border-[#1f3d2b] shadow-sm" : "border-gray-100"
                   )}
                 >
-                  <div className="flex items-center justify-between gap-4 mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-gray-50 rounded-xl text-[#1f3d2b]">
-                        <Package size={20} />
+                  <div className="flex items-center justify-between gap-4 mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className="p-1.5 bg-gray-50 rounded-lg text-[#1f3d2b]">
+                        <Package size={16} />
                       </div>
                       <div>
-                        <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Mã đơn hàng</p>
-                        <p className="text-sm font-bold text-[#1f3d2b]">#{order.id.slice(-6).toUpperCase()}</p>
+                        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Mã đơn</p>
+                        <p className="text-xs font-bold text-[#1f3d2b]">#{order.id.slice(-6).toUpperCase()}</p>
                       </div>
                     </div>
-                    <span className={cn("px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest", getStatusColor(order.status))}>
+                    <span className={cn("px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest", getStatusColor(order.status))}>
                       {getStatusLabel(order.status)}
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                     <div>
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Khách hàng</p>
-                      <p className="text-sm font-bold text-[#1f3d2b] truncate">{order.customerInfo.fullName}</p>
+                      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Khách hàng</p>
+                      <p className="text-xs font-bold text-[#1f3d2b] truncate">{order.customerInfo.fullName}</p>
                     </div>
                     <div>
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Ngày đặt</p>
-                      <p className="text-sm font-bold text-[#1f3d2b]">
+                      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Ngày đặt</p>
+                      <p className="text-xs font-bold text-[#1f3d2b]">
                         {order.createdAt?.toDate().toLocaleDateString('vi-VN')}
                       </p>
                     </div>
                     <div>
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sản phẩm</p>
-                      <p className="text-sm font-bold text-[#1f3d2b]">{order.items.length} món</p>
+                      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Sản phẩm</p>
+                      <p className="text-xs font-bold text-[#1f3d2b]">{order.items.length} món</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Tổng tiền</p>
-                      <p className="text-sm font-bold text-[#1f3d2b]">{formatPrice(order.totalAmount)}</p>
+                      <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Tổng tiền</p>
+                      <p className="text-xs font-bold text-[#1f3d2b]">{formatPrice(order.totalAmount)}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -236,86 +207,119 @@ export default function AdminOrders() {
             )}
           </div>
 
-          {/* Order Detail Sidebar */}
-          <div className="lg:col-span-1">
+          {/* Sidebar: Filters & Detail */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Filters Sidebar */}
+            <div className="bg-white p-6 rounded-3xl border border-gray-100 shadow-sm space-y-6">
+              <h3 className="text-xs font-bold text-[#1f3d2b] uppercase tracking-widest border-b border-gray-50 pb-3 flex items-center gap-2">
+                <Filter size={14} /> Bộ lọc & Tìm kiếm
+              </h3>
+              
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Tìm kiếm</label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
+                    <input 
+                      type="text" 
+                      placeholder="Tên, SĐT, mã đơn..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="pl-9 pr-4 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs focus:outline-none focus:border-[#1f3d2b] w-full"
+                    />
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <label className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Trạng thái</label>
+                  <div className="relative">
+                    <select 
+                      value={statusFilter}
+                      onChange={(e) => setStatusFilter(e.target.value)}
+                      className="appearance-none w-full pl-4 pr-10 py-2.5 bg-gray-50 border border-gray-100 rounded-xl text-xs font-bold text-[#1f3d2b] focus:outline-none focus:border-[#1f3d2b] cursor-pointer"
+                    >
+                      <option value="all">Tất cả trạng thái</option>
+                      <option value="pending">Chờ xử lý</option>
+                      <option value="processing">Đang chuẩn bị</option>
+                      <option value="shipped">Đang giao</option>
+                      <option value="completed">Đã hoàn thành</option>
+                      <option value="cancelled">Đã hủy</option>
+                    </select>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-[#1f3d2b] pointer-events-none" size={14} />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Order Detail Sidebar */}
             <AnimatePresence mode="wait">
               {selectedOrder ? (
                 <motion.div 
                   key={selectedOrder.id}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  className="bg-white p-8 rounded-[40px] shadow-2xl border border-gray-100 sticky top-32 space-y-8"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="bg-white p-6 rounded-3xl shadow-xl border border-gray-100 space-y-6"
                 >
-                  <div className="flex items-center justify-between border-b border-gray-50 pb-6">
-                    <h2 className="text-xl font-serif font-bold text-[#1f3d2b]">Chi tiết đơn hàng</h2>
+                  <div className="flex items-center justify-between border-b border-gray-50 pb-4">
+                    <h2 className="text-lg font-serif font-bold text-[#1f3d2b]">Chi tiết</h2>
                     <button onClick={() => setSelectedOrder(null)} className="text-gray-400 hover:text-red-500">
-                      <XCircle size={20} />
+                      <XCircle size={18} />
                     </button>
                   </div>
 
-                  <div className="space-y-6">
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3 text-[#1f3d2b]">
-                        <User size={18} />
-                        <h3 className="font-bold uppercase tracking-widest text-[10px]">Thông tin khách hàng</h3>
+                  <div className="space-y-5">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 text-[#1f3d2b]">
+                        <User size={14} />
+                        <h3 className="font-bold uppercase tracking-widest text-[9px]">Khách hàng</h3>
                       </div>
-                      <div className="pl-7 space-y-2">
-                        <p className="text-sm font-bold text-[#1f3d2b]">{selectedOrder.customerInfo.fullName}</p>
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
-                          <Phone size={12} /> {selectedOrder.customerInfo.phone}
-                        </div>
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
-                          <Mail size={12} /> {selectedOrder.customerInfo.email}
-                        </div>
-                        <div className="flex items-start gap-2 text-xs text-gray-500">
-                          <MapPin size={12} className="mt-0.5 shrink-0" /> {selectedOrder.customerInfo.address}
-                        </div>
+                      <div className="pl-6 space-y-1">
+                        <p className="text-xs font-bold text-[#1f3d2b]">{selectedOrder.customerInfo.fullName}</p>
+                        <p className="text-[10px] text-gray-500">{selectedOrder.customerInfo.phone}</p>
+                        <p className="text-[10px] text-gray-500 truncate">{selectedOrder.customerInfo.email}</p>
+                        <p className="text-[10px] text-gray-500 leading-relaxed">{selectedOrder.customerInfo.address}</p>
                       </div>
                     </div>
 
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-3 text-[#1f3d2b]">
-                        <Package size={18} />
-                        <h3 className="font-bold uppercase tracking-widest text-[10px]">Sản phẩm đã đặt</h3>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2 text-[#1f3d2b]">
+                        <Package size={14} />
+                        <h3 className="font-bold uppercase tracking-widest text-[9px]">Sản phẩm</h3>
                       </div>
-                      <div className="pl-7 space-y-4 max-h-48 overflow-y-auto no-scrollbar">
+                      <div className="pl-6 space-y-3 max-h-40 overflow-y-auto no-scrollbar">
                         {selectedOrder.items.map((item, idx) => (
-                          <div key={idx} className="flex gap-3">
-                            <img src={item.image} alt={item.name} className="w-10 h-10 rounded-lg object-cover" />
+                          <div key={idx} className="flex gap-2">
+                            <img src={item.image} alt={item.name} className="w-8 h-8 rounded-lg object-cover" />
                             <div className="flex-1 min-w-0">
-                              <p className="text-xs font-bold text-[#1f3d2b] truncate">{item.name}</p>
-                              <p className="text-[10px] text-gray-400">{item.quantity} x {formatPrice(item.price)}</p>
+                              <p className="text-[10px] font-bold text-[#1f3d2b] truncate">{item.name}</p>
+                              <p className="text-[9px] text-gray-400">{item.quantity} x {formatPrice(item.price)}</p>
                             </div>
                           </div>
                         ))}
                       </div>
                     </div>
 
-                    <div className="space-y-4 pt-4 border-t border-gray-50">
-                      <div className="flex items-center gap-3 text-[#1f3d2b]">
-                        <CreditCard size={18} />
-                        <h3 className="font-bold uppercase tracking-widest text-[10px]">Thanh toán & Trạng thái</h3>
+                    <div className="space-y-3 pt-3 border-t border-gray-50">
+                      <div className="flex items-center gap-2 text-[#1f3d2b]">
+                        <CreditCard size={14} />
+                        <h3 className="font-bold uppercase tracking-widest text-[9px]">Thanh toán</h3>
                       </div>
-                      <div className="pl-7 space-y-4">
-                        <div className="flex justify-between text-xs">
-                          <span className="text-gray-400">Phương thức:</span>
-                          <span className="font-bold text-[#1f3d2b] uppercase">{selectedOrder.paymentMethod}</span>
-                        </div>
-                        <div className="flex justify-between text-xs">
+                      <div className="pl-6 space-y-3">
+                        <div className="flex justify-between text-[10px]">
                           <span className="text-gray-400">Tổng cộng:</span>
-                          <span className="font-bold text-[#1f3d2b] text-lg">{formatPrice(selectedOrder.totalAmount)}</span>
+                          <span className="font-bold text-[#1f3d2b]">{formatPrice(selectedOrder.totalAmount)}</span>
                         </div>
                         
                         <div className="space-y-2">
-                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Cập nhật trạng thái</p>
-                          <div className="grid grid-cols-2 gap-2">
+                          <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Trạng thái</p>
+                          <div className="grid grid-cols-2 gap-1.5">
                             {['pending', 'processing', 'shipped', 'completed', 'cancelled'].map(status => (
                               <button
                                 key={status}
                                 onClick={() => updateOrderStatus(selectedOrder.id, status)}
                                 className={cn(
-                                  "px-3 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all",
+                                  "px-2 py-1.5 rounded-lg text-[8px] font-bold uppercase tracking-widest transition-all",
                                   selectedOrder.status === status 
                                     ? getStatusColor(status)
                                     : "bg-gray-50 text-gray-400 hover:bg-gray-100"
@@ -331,11 +335,11 @@ export default function AdminOrders() {
                   </div>
                 </motion.div>
               ) : (
-                <div className="bg-[#f5f2ed] p-12 rounded-[40px] text-center space-y-4 border border-dashed border-gray-200">
-                  <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto text-gray-300">
-                    <ExternalLink size={24} />
+                <div className="bg-[#f5f2ed] p-8 rounded-3xl text-center space-y-3 border border-dashed border-gray-200">
+                  <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto text-gray-300">
+                    <ExternalLink size={20} />
                   </div>
-                  <p className="text-sm font-bold text-gray-400">Chọn một đơn hàng để xem chi tiết</p>
+                  <p className="text-[10px] font-bold text-gray-400">Chọn đơn hàng để xem chi tiết</p>
                 </div>
               )}
             </AnimatePresence>

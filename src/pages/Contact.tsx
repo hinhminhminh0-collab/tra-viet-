@@ -41,7 +41,7 @@ export default function Contact() {
               </div>
               <div className="space-y-1">
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Địa chỉ</p>
-                <p className="text-lg font-bold text-[#1f3d2b]">123 Đường Trà Đạo, Quận 1, TP. Hồ Chí Minh</p>
+                <p className="text-lg font-bold text-[#1f3d2b]">123 Tân Cương, Thái Nguyên, Việt Nam</p>
               </div>
             </div>
 
@@ -51,7 +51,7 @@ export default function Contact() {
               </div>
               <div className="space-y-1">
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Điện thoại</p>
-                <p className="text-lg font-bold text-[#1f3d2b]">+84 123 456 789</p>
+                <p className="text-lg font-bold text-[#1f3d2b]">0898992654</p>
               </div>
             </div>
 
@@ -66,9 +66,9 @@ export default function Contact() {
             </div>
           </div>
 
-          <div className="pt-8 flex items-center gap-6">
+          <div className="pt-8 flex flex-wrap items-center gap-6">
             <button className="flex items-center gap-2 bg-[#25D366] text-white px-8 py-3 rounded-full font-bold hover:opacity-90 transition-all">
-              <MessageCircle size={20} /> WhatsApp
+              <MessageCircle size={20} /> Zalo: 0898992654
             </button>
             <button className="flex items-center gap-2 bg-[#0088cc] text-white px-8 py-3 rounded-full font-bold hover:opacity-90 transition-all">
               <Send size={20} /> Telegram
