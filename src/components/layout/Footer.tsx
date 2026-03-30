@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Facebook, Instagram, Twitter, Mail, Phone, MapPin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -5,6 +6,13 @@ import { cn } from '../../lib/utils';
 
 export default function Footer() {
   const { t, i18n } = useTranslation();
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
     <footer className="bg-[#1f3d2b] text-white pt-20 pb-10 px-6">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
@@ -63,7 +71,13 @@ export default function Footer() {
       </div>
 
       <div className="max-w-7xl mx-auto pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-white/40">
-        <p>© 2026 PHÚC LINH. {t('footer.rights')}</p>
+        <div className="flex flex-col md:flex-row items-center gap-4">
+          <p>© 2026 PHÚC LINH. {t('footer.rights')}</p>
+          <div className="hidden md:block w-px h-3 bg-white/10" />
+          <p className="font-mono tracking-widest text-[10px] uppercase">
+            {currentTime.toLocaleDateString('vi-VN')} — {currentTime.toLocaleTimeString('vi-VN', { hour12: false })}
+          </p>
+        </div>
         
         <div className="flex items-center gap-4">
           {['vi', 'en', 'fr', 'ja', 'zh'].map((lang) => (

@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 
 export default function Header() {
   const { t, i18n } = useTranslation();
+  const [currentTime, setCurrentTime] = useState(new Date());
   const [isScrolled, setIsScrolled] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,12 +21,19 @@ export default function Header() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
       setShowBackToTop(window.scrollY > 500);
     };
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      clearInterval(timer);
+    };
   }, []);
 
   const handleSearch = (e: React.FormEvent) => {
@@ -94,6 +102,16 @@ export default function Header() {
 
         {/* Desktop Icons */}
         <div className="hidden md:flex items-center gap-5">
+          <div className={cn(
+            "text-[10px] font-mono font-bold tracking-widest px-3 py-1 rounded-full border transition-all duration-300 flex items-center gap-2",
+            isScrolled 
+              ? "text-[#1f3d2b] border-[#1f3d2b]/10 bg-[#1f3d2b]/5" 
+              : "text-white border-white/20 bg-white/10 backdrop-blur-sm"
+          )}>
+            <span className="opacity-50">{currentTime.toLocaleDateString('vi-VN')}</span>
+            <span className="w-px h-2 bg-current opacity-20" />
+            {currentTime.toLocaleTimeString('vi-VN', { hour12: false })}
+          </div>
           <button 
             onClick={() => setIsSearchOpen(true)}
             className={cn("hover:opacity-70 transition-opacity", isScrolled ? "text-[#1f3d2b]" : "text-white")}
@@ -211,6 +229,11 @@ export default function Header() {
               </Link>
             ))}
             <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+              <div className="text-[10px] font-mono font-bold tracking-widest px-3 py-1 rounded-full border border-[#1f3d2b]/10 bg-[#1f3d2b]/5 text-[#1f3d2b] flex items-center gap-2">
+                <span className="opacity-50">{currentTime.toLocaleDateString('vi-VN')}</span>
+                <span className="w-px h-2 bg-current opacity-20" />
+                {currentTime.toLocaleTimeString('vi-VN', { hour12: false })}
+              </div>
               <div className="flex items-center gap-6">
                 <Link to="/cart" onClick={() => setIsMenuOpen(false)} className="text-[#1f3d2b]">
                   <ShoppingCart size={24} />
