@@ -67,16 +67,28 @@ export default function Profile() {
 
           <nav className="bg-white p-4 rounded-[40px] shadow-xl border border-gray-100 overflow-hidden">
             {user.role === 'admin' && (
-              <button
-                onClick={() => navigate('/admin/orders')}
-                className="w-full flex items-center justify-between p-4 rounded-2xl transition-all text-red-600 bg-red-50 hover:bg-red-100 mb-4"
-              >
-                <div className="flex items-center gap-3">
-                  <Settings size={18} />
-                  <span className="text-sm font-bold">Quản lý đơn hàng (Admin)</span>
-                </div>
-                <ChevronRight size={16} />
-              </button>
+              <div className="space-y-2 mb-4">
+                <button
+                  onClick={() => navigate('/admin/orders')}
+                  className="w-full flex items-center justify-between p-4 rounded-2xl transition-all text-red-600 bg-red-50 hover:bg-red-100"
+                >
+                  <div className="flex items-center gap-3">
+                    <Package size={18} />
+                    <span className="text-sm font-bold">Quản lý đơn hàng</span>
+                  </div>
+                  <ChevronRight size={16} />
+                </button>
+                <button
+                  onClick={() => navigate('/admin/products')}
+                  className="w-full flex items-center justify-between p-4 rounded-2xl transition-all text-blue-600 bg-blue-50 hover:bg-blue-100"
+                >
+                  <div className="flex items-center gap-3">
+                    <Settings size={18} />
+                    <span className="text-sm font-bold">Quản lý sản phẩm</span>
+                  </div>
+                  <ChevronRight size={16} />
+                </button>
+              </div>
             )}
             {[
               { icon: <UserIcon size={18} />, label: 'Thông tin cá nhân', active: true },

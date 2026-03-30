@@ -13,6 +13,7 @@ import Auth from './pages/Auth';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import AdminOrders from './pages/AdminOrders';
+import AdminProducts from './pages/AdminProducts';
 import Profile from './pages/Profile';
 import Wishlist from './pages/Wishlist';
 import { seedProducts } from './lib/seed';
@@ -37,6 +38,7 @@ export default function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/admin/orders" element={<AdminOrders />} />
+            <Route path="/admin/products" element={<AdminProducts />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/profile" element={<Profile />} />

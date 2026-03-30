@@ -14,7 +14,10 @@ import {
   Thermometer, 
   MapPin,
   CheckCircle2,
-  ArrowLeft
+  ArrowLeft,
+  Edit2,
+  Save,
+  X
 } from 'lucide-react';
 import { toast } from 'sonner';
 import Header from '../components/layout/Header';
@@ -23,8 +26,9 @@ import ProductCard from '../components/ui/ProductCard';
 import { Product } from '../types';
 import { formatPrice, cn } from '../lib/utils';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import { db } from '../firebase';
-import { doc, getDoc, collection, query, where, limit, getDocs } from 'firebase/firestore';
+import { doc, getDoc, collection, query, where, limit, getDocs, updateDoc } from 'firebase/firestore';
 import Loading from '../components/ui/Loading';
 
 export default function ProductDetail() {
@@ -35,8 +39,12 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState('description');
+  const [isEditingPrice, setIsEditingPrice] = useState(false);
+  const [newPrice, setNewPrice] = useState(0);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const { addToCart } = useCart();
+  const { isAdmin } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -79,6 +87,12 @@ export default function ProductDetail() {
     window.scrollTo(0, 0);
   }, [id, navigate]);
 
+  useEffect(() => {
+    if (product) {
+      setNewPrice(product.price);
+    }
+  }, [product]);
+
   if (loading) return <Loading />;
   if (!product) return null;
 
@@ -92,6 +106,23 @@ export default function ProductDetail() {
     if (product) {
       addToCart(product, quantity);
       navigate('/cart');
+    }
+  };
+
+  const handleUpdatePrice = async () => {
+    if (!id || !product) return;
+    setIsUpdating(true);
+    try {
+      const docRef = doc(db, 'products', id);
+      await updateDoc(docRef, { price: newPrice });
+      setProduct({ ...product, price: newPrice });
+      setIsEditingPrice(false);
+      toast.success("Cập nhật giá thành công!");
+    } catch (error) {
+      console.error("Error updating price:", error);
+      toast.error("Lỗi khi cập nhật giá.");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -166,8 +197,34 @@ export default function ProductDetail() {
               <span className="text-sm text-gray-400">({product.reviewsCount} đánh giá)</span>
             </div>
             
-            <div className="text-3xl font-bold text-[#1f3d2b] pt-2">
-              {formatPrice(product.price)}
+            <div className="flex items-center gap-4 pt-2">
+              {isAdmin ? (
+                <div className="flex items-center gap-3">
+                  <input
+                    type="number"
+                    defaultValue={product.price}
+                    onBlur={async (e) => {
+                      const val = Number(e.target.value);
+                      if (val !== product.price) {
+                        try {
+                          const docRef = doc(db, 'products', product.id);
+                          await updateDoc(docRef, { price: val });
+                          toast.success("Đã cập nhật giá!");
+                        } catch (error) {
+                          console.error("Error updating price:", error);
+                          toast.error("Lỗi khi cập nhật giá.");
+                        }
+                      }
+                    }}
+                    className="w-48 bg-white border border-[#1f3d2b]/20 rounded-xl px-4 py-2 text-3xl font-bold text-[#1f3d2b] focus:border-[#1f3d2b] focus:outline-none transition-all"
+                  />
+                  <span className="text-sm font-bold text-gray-400 uppercase tracking-widest">VNĐ</span>
+                </div>
+              ) : (
+                <div className="text-3xl font-bold text-[#1f3d2b]">
+                  {formatPrice(product.price)}
+                </div>
+              )}
             </div>
           </div>
 
