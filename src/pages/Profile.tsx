@@ -66,6 +66,18 @@ export default function Profile() {
           </div>
 
           <nav className="bg-white p-4 rounded-[40px] shadow-xl border border-gray-100 overflow-hidden">
+            {user.role === 'admin' && (
+              <button
+                onClick={() => navigate('/admin/orders')}
+                className="w-full flex items-center justify-between p-4 rounded-2xl transition-all text-red-600 bg-red-50 hover:bg-red-100 mb-4"
+              >
+                <div className="flex items-center gap-3">
+                  <Settings size={18} />
+                  <span className="text-sm font-bold">Quản lý đơn hàng (Admin)</span>
+                </div>
+                <ChevronRight size={16} />
+              </button>
+            )}
             {[
               { icon: <UserIcon size={18} />, label: 'Thông tin cá nhân', active: true },
               { icon: <Package size={18} />, label: 'Đơn hàng của tôi' },

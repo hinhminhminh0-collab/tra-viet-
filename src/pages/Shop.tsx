@@ -1,117 +1,52 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Search, SlidersHorizontal, ChevronDown, X } from 'lucide-react';
+import { Search, SlidersHorizontal, ChevronDown, X, Leaf } from 'lucide-react';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import ProductCard from '../components/ui/ProductCard';
 import { Product } from '../types';
 import { cn } from '../lib/utils';
-
-const MOCK_PRODUCTS: Product[] = [
-  {
-    id: '1',
-    name: 'Bạch Trà Shan Tuyết Cổ Thụ',
-    price: 450000,
-    description: 'Bạch trà tinh khiết từ những búp trà cổ thụ trên đỉnh Tây Côn Lĩnh.',
-    images: ['https://picsum.photos/seed/tea1/800/1000'],
-    category: 'Bạch trà',
-    origin: 'Hà Giang',
-    taste: 'Thanh khiết, ngọt hậu',
-    brewingGuide: 'Pha với nước 85 độ C',
-    stock: 10,
-    rating: 4.9,
-    reviewsCount: 120
-  },
-  {
-    id: '2',
-    name: 'Hồng Trà Cổ Thụ Suối Giàng',
-    price: 380000,
-    description: 'Hồng trà đậm đà, hương mật ong rừng tự nhiên.',
-    images: ['https://picsum.photos/seed/tea2/800/1000'],
-    category: 'Hồng trà',
-    origin: 'Yên Bái',
-    taste: 'Đậm đà, hương mật ong',
-    brewingGuide: 'Pha với nước 95 độ C',
-    stock: 5,
-    rating: 4.8,
-    reviewsCount: 85
-  },
-  {
-    id: '3',
-    name: 'Trà Oolong Tứ Quý',
-    price: 250000,
-    description: 'Trà Oolong thơm hương hoa cỏ, vị ngọt dịu.',
-    images: ['https://picsum.photos/seed/tea3/800/1000'],
-    category: 'Oolong',
-    origin: 'Lâm Đồng',
-    taste: 'Thơm hoa, ngọt dịu',
-    brewingGuide: 'Pha với nước 90 độ C',
-    stock: 20,
-    rating: 4.7,
-    reviewsCount: 64
-  },
-  {
-    id: '4',
-    name: 'Phổ Nhĩ Chín Cổ Thụ',
-    price: 1200000,
-    description: 'Trà Phổ Nhĩ lên men tự nhiên, càng để lâu càng ngon.',
-    images: ['https://picsum.photos/seed/tea4/800/1000'],
-    category: 'Phổ Nhĩ',
-    origin: 'Điện Biên',
-    taste: 'Trầm mặc, gỗ mục',
-    brewingGuide: 'Pha với nước sôi 100 độ C',
-    stock: 3,
-    rating: 5.0,
-    reviewsCount: 42
-  },
-  {
-    id: '5',
-    name: 'Lục Trà Thái Nguyên Đặc Sản',
-    price: 180000,
-    description: 'Lục trà truyền thống, hương cốm non, vị chát dịu.',
-    images: ['https://picsum.photos/seed/tea5/800/1000'],
-    category: 'Lục trà',
-    origin: 'Thái Nguyên',
-    taste: 'Hương cốm, chát dịu',
-    brewingGuide: 'Pha với nước 80 độ C',
-    stock: 15,
-    rating: 4.6,
-    reviewsCount: 156
-  },
-  {
-    id: '6',
-    name: 'Trà Thảo Mộc Cung Đình',
-    price: 150000,
-    description: 'Sự kết hợp của 16 loại thảo mộc quý, giúp thư giãn, dễ ngủ.',
-    images: ['https://picsum.photos/seed/tea6/800/1000'],
-    category: 'Trà thảo mộc',
-    origin: 'Huế',
-    taste: 'Ngọt thanh, thơm thảo mộc',
-    brewingGuide: 'Pha với nước sôi 100 độ C',
-    stock: 30,
-    rating: 4.8,
-    reviewsCount: 92
-  }
-];
+import { db } from '../firebase';
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { ProductSkeleton } from '../components/ui/Loading';
 
 const CATEGORIES = ['Tất cả', 'Bạch trà', 'Hồng trà', 'Lục trà', 'Oolong', 'Phổ Nhĩ', 'Trà thảo mộc'];
 
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('cat') || 'Tất cả');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [sortBy, setSortBy] = useState('newest');
 
-  const filteredProducts = MOCK_PRODUCTS.filter(p => {
+  useEffect(() => {
+    const q = query(collection(db, 'products'), orderBy('name', 'asc'));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const productsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Product[];
+      setProducts(productsData);
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching products:", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const filteredProducts = products.filter(p => {
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'Tất cả' || p.category === selectedCategory;
     return matchesSearch && matchesCategory;
   }).sort((a, b) => {
     if (sortBy === 'price-low') return a.price - b.price;
     if (sortBy === 'price-high') return b.price - a.price;
-    if (sortBy === 'rating') return b.rating - a.rating;
+    if (sortBy === 'rating') return (b.rating || 0) - (a.rating || 0);
     return 0;
   });
 
@@ -248,7 +183,13 @@ export default function Shop() {
             )}
           </div>
 
-          {filteredProducts.length > 0 ? (
+          {loading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
+              {[...Array(10)].map((_, i) => (
+                <ProductSkeleton key={i} />
+              ))}
+            </div>
+          ) : filteredProducts.length > 0 ? (
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
               {filteredProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />

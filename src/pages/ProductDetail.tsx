@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
   Star, 
@@ -23,89 +23,75 @@ import ProductCard from '../components/ui/ProductCard';
 import { Product } from '../types';
 import { formatPrice, cn } from '../lib/utils';
 import { useCart } from '../context/CartContext';
-
-const MOCK_PRODUCTS: Product[] = [
-  {
-    id: '1',
-    name: 'Bạch Trà Shan Tuyết Cổ Thụ',
-    price: 450000,
-    description: 'Bạch trà tinh khiết từ những búp trà cổ thụ trên đỉnh Tây Côn Lĩnh. Được thu hái vào sáng sớm khi sương còn đọng trên lá, bạch trà giữ trọn vẹn hương vị thanh khiết của núi rừng Tây Bắc. Nước trà có màu vàng nhạt như nắng sớm, vị ngọt thanh, hậu vị sâu lắng, hương thơm dịu nhẹ như hoa rừng.',
-    images: ['https://picsum.photos/seed/tea1/800/1000', 'https://picsum.photos/seed/tea1-2/800/1000', 'https://picsum.photos/seed/tea1-3/800/1000'],
-    category: 'Bạch trà',
-    origin: 'Hà Giang',
-    taste: 'Thanh khiết, ngọt hậu, hương hoa rừng',
-    brewingGuide: 'Sử dụng 5g trà cho 200ml nước. Nhiệt độ nước lý tưởng là 85°C. Thời gian hãm trà từ 30-45 giây cho lần nước đầu tiên.',
-    stock: 10,
-    rating: 4.9,
-    reviewsCount: 120
-  },
-  {
-    id: '2',
-    name: 'Hồng Trà Cổ Thụ Suối Giàng',
-    price: 380000,
-    description: 'Hồng trà đậm đà, hương mật ong rừng tự nhiên. Được chế biến từ những lá trà cổ thụ Suối Giàng, Yên Bái. Qua quá trình lên men hoàn toàn, hồng trà mang đến hương vị nồng nàn, ấm áp, rất phù hợp cho những buổi chiều se lạnh.',
-    images: ['https://picsum.photos/seed/tea2/800/1000'],
-    category: 'Hồng trà',
-    origin: 'Yên Bái',
-    taste: 'Đậm đà, hương mật ong, nồng nàn',
-    brewingGuide: 'Sử dụng 5g trà cho 200ml nước. Nhiệt độ nước lý tưởng là 95°C. Thời gian hãm trà từ 45-60 giây.',
-    stock: 5,
-    rating: 4.8,
-    reviewsCount: 85
-  },
-  {
-    id: '3',
-    name: 'Trà Oolong Tứ Quý',
-    price: 250000,
-    description: 'Trà Oolong thơm hương hoa cỏ, vị ngọt dịu. Được trồng tại vùng cao nguyên Lâm Đồng, trà Oolong Tứ Quý mang đến sự tươi mát, sảng khoái cho người thưởng thức.',
-    images: ['https://picsum.photos/seed/tea3/800/1000'],
-    category: 'Oolong',
-    origin: 'Lâm Đồng',
-    taste: 'Thơm hoa cỏ, ngọt dịu, thanh mát',
-    brewingGuide: 'Sử dụng 5g trà cho 200ml nước. Nhiệt độ nước lý tưởng là 90°C. Thời gian hãm trà từ 40-50 giây.',
-    stock: 20,
-    rating: 4.7,
-    reviewsCount: 64
-  },
-  {
-    id: '4',
-    name: 'Phổ Nhĩ Chín Cổ Thụ',
-    price: 1200000,
-    description: 'Trà Phổ Nhĩ lên men tự nhiên, càng để lâu càng ngon. Đây là dòng trà quý hiếm, được ép bánh từ những lá trà cổ thụ Điện Biên. Vị trà trầm mặc, sâu lắng, mang hơi thở của thời gian.',
-    images: ['https://picsum.photos/seed/tea4/800/1000'],
-    category: 'Phổ Nhĩ',
-    origin: 'Điện Biên',
-    taste: 'Trầm mặc, gỗ mục, hậu vị ngọt sâu',
-    brewingGuide: 'Sử dụng 8g trà cho 200ml nước. Nhiệt độ nước lý tưởng là 100°C. Thời gian hãm trà từ 20-30 giây.',
-    stock: 3,
-    rating: 5.0,
-    reviewsCount: 42
-  }
-];
+import { db } from '../firebase';
+import { doc, getDoc, collection, query, where, limit, getDocs } from 'firebase/firestore';
+import Loading from '../components/ui/Loading';
 
 export default function ProductDetail() {
   const { id } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const [activeTab, setActiveTab] = useState('description');
 
   const { addToCart } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const found = MOCK_PRODUCTS.find(p => p.id === id);
-    if (found) {
-      setProduct(found);
-      setActiveImage(0);
-    }
-    window.scrollTo(0, 0);
-  }, [id]);
+    const fetchProduct = async () => {
+      if (!id) return;
+      setLoading(true);
+      try {
+        const docRef = doc(db, 'products', id);
+        const docSnap = await getDoc(docRef);
+        
+        if (docSnap.exists()) {
+          const productData = { id: docSnap.id, ...docSnap.data() } as Product;
+          setProduct(productData);
+          setActiveImage(0);
+          
+          // Fetch related products
+          const q = query(
+            collection(db, 'products'), 
+            where('category', '==', productData.category),
+            limit(5)
+          );
+          const relatedSnap = await getDocs(q);
+          const related = relatedSnap.docs
+            .map(d => ({ id: d.id, ...d.data() } as Product))
+            .filter(p => p.id !== id);
+          setRelatedProducts(related);
+        } else {
+          toast.error("Không tìm thấy sản phẩm.");
+          navigate('/shop');
+        }
+      } catch (error) {
+        console.error("Error fetching product:", error);
+        toast.error("Lỗi khi tải thông tin sản phẩm.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  if (!product) return <div className="pt-32 text-center">Đang tải sản phẩm...</div>;
+    fetchProduct();
+    window.scrollTo(0, 0);
+  }, [id, navigate]);
+
+  if (loading) return <Loading />;
+  if (!product) return null;
 
   const handleAddToCart = () => {
     if (product) {
       addToCart(product, quantity);
+    }
+  };
+
+  const handleBuyNow = () => {
+    if (product) {
+      addToCart(product, quantity);
+      navigate('/cart');
     }
   };
 
@@ -232,7 +218,10 @@ export default function ProductDetail() {
                 <ShoppingCart size={20} />
                 Thêm vào giỏ hàng
               </button>
-              <button className="flex-1 bg-white text-[#1f3d2b] border-2 border-[#1f3d2b] py-4 rounded-full font-bold uppercase tracking-widest hover:bg-[#1f3d2b] hover:text-white transition-all">
+              <button 
+                onClick={handleBuyNow}
+                className="flex-1 bg-white text-[#1f3d2b] border-2 border-[#1f3d2b] py-4 rounded-full font-bold uppercase tracking-widest hover:bg-[#1f3d2b] hover:text-white transition-all"
+              >
                 Mua ngay
               </button>
             </div>
@@ -357,9 +346,13 @@ export default function ProductDetail() {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {MOCK_PRODUCTS.filter(p => p.id !== product.id).slice(0, 4).map(p => (
-              <ProductCard key={p.id} product={p} />
-            ))}
+            {relatedProducts.length > 0 ? (
+              relatedProducts.slice(0, 4).map(p => (
+                <ProductCard key={p.id} product={p} />
+              ))
+            ) : (
+              <p className="text-gray-400 italic">Không có sản phẩm tương tự.</p>
+            )}
           </div>
         </div>
       </section>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, User, Menu, X, Search, Heart } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { ShoppingCart, User, Menu, X, Search, Heart, Package, ArrowUp, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
@@ -8,16 +8,36 @@ import { cn } from '../../lib/utils';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const { user, isAdmin } = useAuth();
   const { totalItems } = useCart();
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+      setShowBackToTop(window.scrollY > 500);
+    };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+      setIsSearchOpen(false);
+      setSearchQuery('');
+    }
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   const navLinks = [
     { name: 'Trang chủ', path: '/' },
@@ -68,7 +88,10 @@ export default function Header() {
 
         {/* Desktop Icons */}
         <div className="hidden md:flex items-center gap-5">
-          <button className={cn("hover:opacity-70 transition-opacity", isScrolled ? "text-[#1f3d2b]" : "text-white")}>
+          <button 
+            onClick={() => setIsSearchOpen(true)}
+            className={cn("hover:opacity-70 transition-opacity", isScrolled ? "text-[#1f3d2b]" : "text-white")}
+          >
             <Search size={20} />
           </button>
           <Link to="/wishlist" className={cn("hover:opacity-70 transition-opacity", isScrolled ? "text-[#1f3d2b]" : "text-white")}>
@@ -82,6 +105,11 @@ export default function Header() {
               </span>
             )}
           </Link>
+          {isAdmin && (
+            <Link to="/admin/orders" className={cn("hover:opacity-70 transition-opacity", isScrolled ? "text-[#1f3d2b]" : "text-white")}>
+              <Package size={20} />
+            </Link>
+          )}
           <Link to={user ? "/profile" : "/auth"} className={cn("hover:opacity-70 transition-opacity", isScrolled ? "text-[#1f3d2b]" : "text-white")}>
             <User size={20} />
           </Link>
@@ -95,6 +123,67 @@ export default function Header() {
           {isMenuOpen ? <X size={24} className={isScrolled ? "text-[#1f3d2b]" : "text-white"} /> : <Menu size={24} className={isScrolled ? "text-[#1f3d2b]" : "text-white"} />}
         </button>
       </div>
+
+      {/* Search Overlay */}
+      <AnimatePresence>
+        {isSearchOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsSearchOpen(false)}
+              className="absolute inset-0 bg-[#1f3d2b]/95 backdrop-blur-md"
+            />
+            <motion.div
+              initial={{ opacity: 0, y: -50 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -50 }}
+              className="relative w-full max-w-3xl"
+            >
+              <button 
+                onClick={() => setIsSearchOpen(false)}
+                className="absolute -top-16 right-0 text-white/60 hover:text-white transition-colors"
+              >
+                <X size={32} />
+              </button>
+              <form onSubmit={handleSearch} className="relative">
+                <input
+                  autoFocus
+                  type="text"
+                  placeholder="Tìm kiếm sản phẩm trà..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-transparent border-b-2 border-white/20 py-6 text-4xl md:text-6xl font-serif text-white placeholder:text-white/20 focus:outline-none focus:border-white transition-colors"
+                />
+                <button 
+                  type="submit"
+                  className="absolute right-0 bottom-6 text-white/40 hover:text-white transition-colors"
+                >
+                  <ArrowRight size={40} />
+                </button>
+              </form>
+              <div className="mt-8 flex flex-wrap gap-4">
+                <span className="text-white/40 text-sm">Gợi ý:</span>
+                {['Bạch trà', 'Hồng trà', 'Oolong', 'Phổ Nhĩ', 'Shan Tuyết'].map(tag => (
+                  <button
+                    key={tag}
+                    onClick={() => {
+                      setSearchQuery(tag);
+                      navigate(`/shop?search=${encodeURIComponent(tag)}`);
+                      setIsSearchOpen(false);
+                      setSearchQuery('');
+                    }}
+                    className="text-white/60 hover:text-white text-sm border border-white/10 px-4 py-1 rounded-full transition-colors"
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Mobile Menu */}
       <AnimatePresence>
@@ -122,11 +211,30 @@ export default function Header() {
               <Link to="/wishlist" onClick={() => setIsMenuOpen(false)} className="text-[#1f3d2b]">
                 <Heart size={24} />
               </Link>
+              {isAdmin && (
+                <Link to="/admin/orders" onClick={() => setIsMenuOpen(false)} className="text-[#1f3d2b]">
+                  <Package size={24} />
+                </Link>
+              )}
               <Link to={user ? "/profile" : "/auth"} onClick={() => setIsMenuOpen(false)} className="text-[#1f3d2b]">
                 <User size={24} />
               </Link>
             </div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showBackToTop && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.5 }}
+            onClick={scrollToTop}
+            className="fixed bottom-8 right-8 z-50 bg-[#1f3d2b] text-white p-4 rounded-full shadow-2xl hover:bg-black transition-all"
+          >
+            <ArrowUp size={24} />
+          </motion.button>
         )}
       </AnimatePresence>
     </header>

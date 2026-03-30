@@ -1,31 +1,48 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Trash2, ShoppingBag, ArrowRight, Minus, Plus, ShieldCheck, Truck } from 'lucide-react';
+import { Trash2, ShoppingBag, ArrowRight, Minus, Plus, ShieldCheck, Truck, Trash } from 'lucide-react';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import { useCart } from '../context/CartContext';
 import { formatPrice } from '../lib/utils';
+import { toast } from 'sonner';
 
 export default function Cart() {
-  const { cart, removeFromCart, updateQuantity, totalPrice } = useCart();
+  const { cart, removeFromCart, updateQuantity, totalPrice, clearCart } = useCart();
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   const shipping = totalPrice > 1000000 || totalPrice === 0 ? 0 : 30000;
   const total = totalPrice + shipping;
+
+  const handleClearCart = () => {
+    clearCart();
+    setShowClearConfirm(false);
+    toast.success("Đã xóa toàn bộ giỏ hàng.");
+  };
 
   return (
     <div className="min-h-screen bg-[#fcfbf7]">
       <Header />
 
       <section className="pt-40 pb-24 px-6 max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row items-end justify-between gap-6 mb-12">
-          <div className="space-y-4">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#1f3d2b]">Giỏ hàng của bạn</h1>
-            <p className="text-gray-500">Bạn đang có <span className="font-bold text-[#1f3d2b]">{cart.length}</span> sản phẩm trong giỏ hàng.</p>
+          <div className="flex flex-col md:flex-row items-end justify-between gap-6 mb-12">
+            <div className="space-y-4">
+              <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#1f3d2b]">Giỏ hàng của bạn</h1>
+              <p className="text-gray-500">Bạn đang có <span className="font-bold text-[#1f3d2b]">{cart.length}</span> sản phẩm trong giỏ hàng.</p>
+            </div>
+            <div className="flex items-center gap-6">
+              <button 
+                onClick={() => setShowClearConfirm(true)}
+                className="text-xs font-bold text-red-500 flex items-center gap-2 hover:opacity-70 transition-opacity"
+              >
+                <Trash size={14} /> Xóa toàn bộ
+              </button>
+              <Link to="/shop" className="text-sm font-bold text-[#1f3d2b] border-b-2 border-[#1f3d2b] pb-1 hover:opacity-70 transition-opacity">
+                Tiếp tục mua sắm
+              </Link>
+            </div>
           </div>
-          <Link to="/shop" className="text-sm font-bold text-[#1f3d2b] border-b-2 border-[#1f3d2b] pb-1 hover:opacity-70 transition-opacity">
-            Tiếp tục mua sắm
-          </Link>
-        </div>
 
         {cart.length > 0 ? (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
@@ -141,9 +158,12 @@ export default function Cart() {
                 </div>
 
                 <div className="space-y-4 pt-4">
-                  <button className="w-full bg-[#1f3d2b] text-white py-5 rounded-full font-bold uppercase tracking-widest hover:bg-opacity-90 transition-all shadow-xl shadow-[#1f3d2b]/20 flex items-center justify-center gap-3">
+                  <Link 
+                    to="/checkout"
+                    className="w-full bg-[#1f3d2b] text-white py-5 rounded-full font-bold uppercase tracking-widest hover:bg-opacity-90 transition-all shadow-xl shadow-[#1f3d2b]/20 flex items-center justify-center gap-3"
+                  >
                     Tiến hành thanh toán <ArrowRight size={18} />
-                  </button>
+                  </Link>
                   <div className="flex items-center justify-center gap-4">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" className="h-4 opacity-40 grayscale" />
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1280px-Mastercard-logo.svg.png" alt="Mastercard" className="h-6 opacity-40 grayscale" />
@@ -171,6 +191,48 @@ export default function Cart() {
           </div>
         )}
       </section>
+
+      <AnimatePresence>
+        {showClearConfirm && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowClearConfirm(false)}
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative bg-white rounded-[32px] p-8 max-w-md w-full shadow-2xl text-center space-y-6"
+            >
+              <div className="w-20 h-20 bg-red-50 rounded-full flex items-center justify-center mx-auto text-red-500">
+                <Trash2 size={40} />
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-2xl font-serif font-bold text-[#1f3d2b]">Xóa giỏ hàng?</h3>
+                <p className="text-gray-500">Bạn có chắc chắn muốn xóa tất cả sản phẩm khỏi giỏ hàng không?</p>
+              </div>
+              <div className="grid grid-cols-2 gap-4 pt-4">
+                <button
+                  onClick={() => setShowClearConfirm(false)}
+                  className="py-4 rounded-full font-bold text-gray-500 hover:bg-gray-50 transition-colors"
+                >
+                  Hủy bỏ
+                </button>
+                <button
+                  onClick={handleClearCart}
+                  className="py-4 rounded-full font-bold bg-red-500 text-white hover:bg-red-600 transition-colors shadow-lg shadow-red-500/20"
+                >
+                  Xác nhận xóa
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       <Footer />
     </div>

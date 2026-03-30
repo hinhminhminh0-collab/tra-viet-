@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ShoppingCart, Heart, Star, Edit, X, Save, Leaf, Image as ImageIcon } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Product } from '../../types';
@@ -26,6 +26,13 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   const { isAdmin } = useAuth();
   const { addToCart } = useCart();
+  const navigate = useNavigate();
+
+  const handleBuyNow = (e: React.MouseEvent) => {
+    e.preventDefault();
+    addToCart(product);
+    navigate('/cart');
+  };
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -110,7 +117,10 @@ export default function ProductCard({ product }: ProductCardProps) {
             <span className="text-sm font-bold text-[#1f3d2b]">
               {formatPrice(product.price)}
             </span>
-            <button className="text-[10px] font-bold text-[#1f3d2b] underline underline-offset-2 hover:opacity-70 transition-opacity">
+            <button 
+              onClick={handleBuyNow}
+              className="text-[10px] font-bold text-[#1f3d2b] underline underline-offset-2 hover:opacity-70 transition-opacity"
+            >
               Mua
             </button>
           </div>

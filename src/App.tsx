@@ -10,6 +10,8 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Auth from './pages/Auth';
 import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import AdminOrders from './pages/AdminOrders';
 import Profile from './pages/Profile';
 import Wishlist from './pages/Wishlist';
 
@@ -27,6 +29,8 @@ export default function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/admin/orders" element={<AdminOrders />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/profile" element={<Profile />} />
