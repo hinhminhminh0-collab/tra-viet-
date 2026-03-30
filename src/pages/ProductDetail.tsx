@@ -1,0 +1,370 @@
+import { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'motion/react';
+import { 
+  Star, 
+  ShoppingCart, 
+  Heart, 
+  Share2, 
+  ChevronRight, 
+  Minus, 
+  Plus, 
+  Leaf, 
+  Clock, 
+  Thermometer, 
+  MapPin,
+  CheckCircle2,
+  ArrowLeft
+} from 'lucide-react';
+import { toast } from 'sonner';
+import Header from '../components/layout/Header';
+import Footer from '../components/layout/Footer';
+import ProductCard from '../components/ui/ProductCard';
+import { Product } from '../types';
+import { formatPrice, cn } from '../lib/utils';
+import { useCart } from '../context/CartContext';
+
+const MOCK_PRODUCTS: Product[] = [
+  {
+    id: '1',
+    name: 'Bạch Trà Shan Tuyết Cổ Thụ',
+    price: 450000,
+    description: 'Bạch trà tinh khiết từ những búp trà cổ thụ trên đỉnh Tây Côn Lĩnh. Được thu hái vào sáng sớm khi sương còn đọng trên lá, bạch trà giữ trọn vẹn hương vị thanh khiết của núi rừng Tây Bắc. Nước trà có màu vàng nhạt như nắng sớm, vị ngọt thanh, hậu vị sâu lắng, hương thơm dịu nhẹ như hoa rừng.',
+    images: ['https://picsum.photos/seed/tea1/800/1000', 'https://picsum.photos/seed/tea1-2/800/1000', 'https://picsum.photos/seed/tea1-3/800/1000'],
+    category: 'Bạch trà',
+    origin: 'Hà Giang',
+    taste: 'Thanh khiết, ngọt hậu, hương hoa rừng',
+    brewingGuide: 'Sử dụng 5g trà cho 200ml nước. Nhiệt độ nước lý tưởng là 85°C. Thời gian hãm trà từ 30-45 giây cho lần nước đầu tiên.',
+    stock: 10,
+    rating: 4.9,
+    reviewsCount: 120
+  },
+  {
+    id: '2',
+    name: 'Hồng Trà Cổ Thụ Suối Giàng',
+    price: 380000,
+    description: 'Hồng trà đậm đà, hương mật ong rừng tự nhiên. Được chế biến từ những lá trà cổ thụ Suối Giàng, Yên Bái. Qua quá trình lên men hoàn toàn, hồng trà mang đến hương vị nồng nàn, ấm áp, rất phù hợp cho những buổi chiều se lạnh.',
+    images: ['https://picsum.photos/seed/tea2/800/1000'],
+    category: 'Hồng trà',
+    origin: 'Yên Bái',
+    taste: 'Đậm đà, hương mật ong, nồng nàn',
+    brewingGuide: 'Sử dụng 5g trà cho 200ml nước. Nhiệt độ nước lý tưởng là 95°C. Thời gian hãm trà từ 45-60 giây.',
+    stock: 5,
+    rating: 4.8,
+    reviewsCount: 85
+  },
+  {
+    id: '3',
+    name: 'Trà Oolong Tứ Quý',
+    price: 250000,
+    description: 'Trà Oolong thơm hương hoa cỏ, vị ngọt dịu. Được trồng tại vùng cao nguyên Lâm Đồng, trà Oolong Tứ Quý mang đến sự tươi mát, sảng khoái cho người thưởng thức.',
+    images: ['https://picsum.photos/seed/tea3/800/1000'],
+    category: 'Oolong',
+    origin: 'Lâm Đồng',
+    taste: 'Thơm hoa cỏ, ngọt dịu, thanh mát',
+    brewingGuide: 'Sử dụng 5g trà cho 200ml nước. Nhiệt độ nước lý tưởng là 90°C. Thời gian hãm trà từ 40-50 giây.',
+    stock: 20,
+    rating: 4.7,
+    reviewsCount: 64
+  },
+  {
+    id: '4',
+    name: 'Phổ Nhĩ Chín Cổ Thụ',
+    price: 1200000,
+    description: 'Trà Phổ Nhĩ lên men tự nhiên, càng để lâu càng ngon. Đây là dòng trà quý hiếm, được ép bánh từ những lá trà cổ thụ Điện Biên. Vị trà trầm mặc, sâu lắng, mang hơi thở của thời gian.',
+    images: ['https://picsum.photos/seed/tea4/800/1000'],
+    category: 'Phổ Nhĩ',
+    origin: 'Điện Biên',
+    taste: 'Trầm mặc, gỗ mục, hậu vị ngọt sâu',
+    brewingGuide: 'Sử dụng 8g trà cho 200ml nước. Nhiệt độ nước lý tưởng là 100°C. Thời gian hãm trà từ 20-30 giây.',
+    stock: 3,
+    rating: 5.0,
+    reviewsCount: 42
+  }
+];
+
+export default function ProductDetail() {
+  const { id } = useParams();
+  const [product, setProduct] = useState<Product | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const [activeImage, setActiveImage] = useState(0);
+  const [activeTab, setActiveTab] = useState('description');
+
+  const { addToCart } = useCart();
+
+  useEffect(() => {
+    const found = MOCK_PRODUCTS.find(p => p.id === id);
+    if (found) {
+      setProduct(found);
+      setActiveImage(0);
+    }
+    window.scrollTo(0, 0);
+  }, [id]);
+
+  if (!product) return <div className="pt-32 text-center">Đang tải sản phẩm...</div>;
+
+  const handleAddToCart = () => {
+    if (product) {
+      addToCart(product, quantity);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-[#fcfbf7]">
+      <Header />
+
+      {/* Breadcrumbs */}
+      <nav className="pt-28 pb-6 px-6 max-w-7xl mx-auto flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-gray-400">
+        <Link to="/" className="hover:text-[#1f3d2b] transition-colors">Trang chủ</Link>
+        <ChevronRight size={12} />
+        <Link to="/shop" className="hover:text-[#1f3d2b] transition-colors">Cửa hàng</Link>
+        <ChevronRight size={12} />
+        <span className="text-[#1f3d2b]">{product.name}</span>
+      </nav>
+
+      <section className="py-12 px-6 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16">
+        {/* Image Gallery */}
+        <div className="space-y-6">
+          <motion.div
+            layoutId={`product-image-${product.id}`}
+            className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border border-gray-100 bg-white"
+          >
+            <img
+              src={product.images[activeImage]}
+              alt={product.name}
+              className="w-full h-full object-cover"
+              referrerPolicy="no-referrer"
+            />
+          </motion.div>
+          
+          <div className="flex gap-4 overflow-x-auto pb-2 no-scrollbar">
+            {product.images.map((img, i) => (
+              <button
+                key={i}
+                onClick={() => setActiveImage(i)}
+                className={cn(
+                  "w-24 aspect-square rounded-xl overflow-hidden border-2 transition-all shrink-0",
+                  activeImage === i ? "border-[#1f3d2b] scale-105" : "border-transparent opacity-60 hover:opacity-100"
+                )}
+              >
+                <img src={img} alt={`${product.name} ${i}`} className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Product Info */}
+        <div className="space-y-8">
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-[#1f3d2b] uppercase tracking-[0.2em] bg-[#1f3d2b]/5 px-3 py-1 rounded-full">
+                {product.category}
+              </span>
+              <div className="flex items-center gap-4">
+                <button className="text-gray-400 hover:text-red-500 transition-colors"><Heart size={20} /></button>
+                <button className="text-gray-400 hover:text-[#1f3d2b] transition-colors"><Share2 size={20} /></button>
+              </div>
+            </div>
+            
+            <h1 className="text-4xl md:text-5xl font-serif font-bold text-[#1f3d2b] leading-tight">
+              {product.name}
+            </h1>
+            
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-1 text-yellow-500">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} size={16} fill={i < Math.floor(product.rating) ? "currentColor" : "none"} />
+                ))}
+                <span className="ml-2 text-sm font-bold text-gray-700">{product.rating}</span>
+              </div>
+              <span className="text-sm text-gray-400">({product.reviewsCount} đánh giá)</span>
+            </div>
+            
+            <div className="text-3xl font-bold text-[#1f3d2b] pt-2">
+              {formatPrice(product.price)}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-gray-100 shadow-sm">
+              <MapPin className="text-[#1f3d2b]" size={20} />
+              <div>
+                <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Xuất xứ</p>
+                <p className="text-sm font-bold text-[#1f3d2b]">{product.origin}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 p-4 rounded-2xl bg-white border border-gray-100 shadow-sm">
+              <Leaf className="text-[#1f3d2b]" size={20} />
+              <div>
+                <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Hương vị</p>
+                <p className="text-sm font-bold text-[#1f3d2b]">{product.taste.split(',')[0]}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-6 pt-4">
+            <div className="flex items-center gap-6">
+              <div className="flex items-center border border-gray-200 rounded-full p-1 bg-white">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="p-2 hover:bg-gray-50 rounded-full transition-colors text-[#1f3d2b]"
+                >
+                  <Minus size={18} />
+                </button>
+                <span className="w-12 text-center font-bold text-[#1f3d2b]">{quantity}</span>
+                <button
+                  onClick={() => setQuantity(quantity + 1)}
+                  className="p-2 hover:bg-gray-50 rounded-full transition-colors text-[#1f3d2b]"
+                >
+                  <Plus size={18} />
+                </button>
+              </div>
+              <p className="text-xs text-gray-400 font-medium">
+                {product.stock > 0 ? `Còn ${product.stock} sản phẩm trong kho` : 'Hết hàng'}
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-4">
+              <button
+                onClick={handleAddToCart}
+                className="flex-1 bg-[#1f3d2b] text-white py-4 rounded-full font-bold uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-opacity-90 transition-all shadow-xl shadow-[#1f3d2b]/20"
+              >
+                <ShoppingCart size={20} />
+                Thêm vào giỏ hàng
+              </button>
+              <button className="flex-1 bg-white text-[#1f3d2b] border-2 border-[#1f3d2b] py-4 rounded-full font-bold uppercase tracking-widest hover:bg-[#1f3d2b] hover:text-white transition-all">
+                Mua ngay
+              </button>
+            </div>
+          </div>
+
+          <div className="pt-8 space-y-6">
+            <div className="flex gap-8 border-b border-gray-100">
+              {['description', 'brewing', 'reviews'].map(tab => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveTab(tab)}
+                  className={cn(
+                    "pb-4 text-xs font-bold uppercase tracking-widest transition-all relative",
+                    activeTab === tab ? "text-[#1f3d2b]" : "text-gray-400 hover:text-gray-600"
+                  )}
+                >
+                  {tab === 'description' ? 'Mô tả' : tab === 'brewing' ? 'Cách pha' : 'Đánh giá'}
+                  {activeTab === tab && (
+                    <motion.div layoutId="activeTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#1f3d2b]" />
+                  )}
+                </button>
+              ))}
+            </div>
+
+            <div className="min-h-[200px]">
+              <AnimatePresence mode="wait">
+                {activeTab === 'description' && (
+                  <motion.div
+                    key="desc"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="text-gray-600 leading-relaxed space-y-4"
+                  >
+                    <p>{product.description}</p>
+                    <ul className="space-y-2">
+                      <li className="flex items-center gap-2 text-sm">
+                        <CheckCircle2 size={16} className="text-[#1f3d2b]" />
+                        <span>100% trà sạch tự nhiên, không hóa chất</span>
+                      </li>
+                      <li className="flex items-center gap-2 text-sm">
+                        <CheckCircle2 size={16} className="text-[#1f3d2b]" />
+                        <span>Thu hái thủ công từ cây trà cổ thụ</span>
+                      </li>
+                      <li className="flex items-center gap-2 text-sm">
+                        <CheckCircle2 size={16} className="text-[#1f3d2b]" />
+                        <span>Đóng gói hút chân không bảo quản hương vị</span>
+                      </li>
+                    </ul>
+                  </motion.div>
+                )}
+
+                {activeTab === 'brewing' && (
+                  <motion.div
+                    key="brewing"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="space-y-6"
+                  >
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="text-center p-4 rounded-2xl bg-white border border-gray-100">
+                        <Thermometer className="mx-auto text-[#1f3d2b] mb-2" size={24} />
+                        <p className="text-[10px] font-bold text-gray-400 uppercase">Nhiệt độ</p>
+                        <p className="text-sm font-bold text-[#1f3d2b]">{product.brewingGuide.match(/\d+ độ C/)?.[0] || '90°C'}</p>
+                      </div>
+                      <div className="text-center p-4 rounded-2xl bg-white border border-gray-100">
+                        <Clock className="mx-auto text-[#1f3d2b] mb-2" size={24} />
+                        <p className="text-[10px] font-bold text-gray-400 uppercase">Thời gian</p>
+                        <p className="text-sm font-bold text-[#1f3d2b]">30-60s</p>
+                      </div>
+                      <div className="text-center p-4 rounded-2xl bg-white border border-gray-100">
+                        <Leaf className="mx-auto text-[#1f3d2b] mb-2" size={24} />
+                        <p className="text-[10px] font-bold text-gray-400 uppercase">Lượng trà</p>
+                        <p className="text-sm font-bold text-[#1f3d2b]">5g / 200ml</p>
+                      </div>
+                    </div>
+                    <p className="text-gray-600 leading-relaxed italic">
+                      "{product.brewingGuide}"
+                    </p>
+                  </motion.div>
+                )}
+
+                {activeTab === 'reviews' && (
+                  <motion.div
+                    key="reviews"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="space-y-6"
+                  >
+                    {[1, 2].map(i => (
+                      <div key={i} className="space-y-2 border-b border-gray-50 pb-4">
+                        <div className="flex items-center justify-between">
+                          <p className="font-bold text-[#1f3d2b]">Nguyễn Văn A</p>
+                          <div className="flex text-yellow-500">
+                            {[...Array(5)].map((_, j) => <Star key={j} size={12} fill="currentColor" />)}
+                          </div>
+                        </div>
+                        <p className="text-sm text-gray-600">Trà rất thơm, vị ngọt hậu sâu lắng. Giao hàng nhanh và đóng gói rất cẩn thận. Sẽ ủng hộ shop dài dài!</p>
+                        <p className="text-[10px] text-gray-400">20/03/2026</p>
+                      </div>
+                    ))}
+                    <button className="text-xs font-bold text-[#1f3d2b] uppercase tracking-widest hover:opacity-70">
+                      Xem tất cả đánh giá
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Related Products */}
+      <section className="py-24 px-6 bg-white">
+        <div className="max-w-7xl mx-auto space-y-12">
+          <div className="flex items-center justify-between">
+            <h2 className="text-3xl font-serif font-bold text-[#1f3d2b]">Sản phẩm tương tự</h2>
+            <Link to="/shop" className="text-sm font-bold text-[#1f3d2b] flex items-center gap-2">
+              Xem tất cả <ChevronRight size={16} />
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {MOCK_PRODUCTS.filter(p => p.id !== product.id).slice(0, 4).map(p => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <Footer />
+    </div>
+  );
+}
