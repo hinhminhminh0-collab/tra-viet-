@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowRight, Leaf, ShieldCheck, Truck, Clock } from 'lucide-react';
@@ -6,65 +7,8 @@ import Footer from '../components/layout/Footer';
 import ProductCard from '../components/ui/ProductCard';
 import TeaQuiz from '../components/ui/TeaQuiz';
 import { Product } from '../types';
-
-const MOCK_PRODUCTS: Product[] = [
-  {
-    id: '1',
-    name: 'Bạch Trà Shan Tuyết Cổ Thụ',
-    price: 450000,
-    description: 'Bạch trà tinh khiết từ những búp trà cổ thụ trên đỉnh Tây Côn Lĩnh.',
-    images: ['https://picsum.photos/seed/tea1/800/1000'],
-    category: 'Bạch trà',
-    origin: 'Hà Giang',
-    taste: 'Thanh khiết, ngọt hậu',
-    brewingGuide: 'Pha với nước 85 độ C',
-    stock: 10,
-    rating: 4.9,
-    reviewsCount: 120
-  },
-  {
-    id: '2',
-    name: 'Hồng Trà Cổ Thụ Suối Giàng',
-    price: 380000,
-    description: 'Hồng trà đậm đà, hương mật ong rừng tự nhiên.',
-    images: ['https://picsum.photos/seed/tea2/800/1000'],
-    category: 'Hồng trà',
-    origin: 'Yên Bái',
-    taste: 'Đậm đà, hương mật ong',
-    brewingGuide: 'Pha với nước 95 độ C',
-    stock: 5,
-    rating: 4.8,
-    reviewsCount: 85
-  },
-  {
-    id: '3',
-    name: 'Trà Oolong Tứ Quý',
-    price: 250000,
-    description: 'Trà Oolong thơm hương hoa cỏ, vị ngọt dịu.',
-    images: ['https://picsum.photos/seed/tea3/800/1000'],
-    category: 'Oolong',
-    origin: 'Lâm Đồng',
-    taste: 'Thơm hoa, ngọt dịu',
-    brewingGuide: 'Pha với nước 90 độ C',
-    stock: 20,
-    rating: 4.7,
-    reviewsCount: 64
-  },
-  {
-    id: '4',
-    name: 'Phổ Nhĩ Chín Cổ Thụ',
-    price: 1200000,
-    description: 'Trà Phổ Nhĩ lên men tự nhiên, càng để lâu càng ngon.',
-    images: ['https://picsum.photos/seed/tea4/800/1000'],
-    category: 'Phổ Nhĩ',
-    origin: 'Điện Biên',
-    taste: 'Trầm mặc, gỗ mục',
-    brewingGuide: 'Pha với nước sôi 100 độ C',
-    stock: 3,
-    rating: 5.0,
-    reviewsCount: 42
-  }
-];
+import { db } from '../firebase';
+import { collection, query, limit, getDocs, orderBy } from 'firebase/firestore';
 
 const CATEGORIES = [
   { name: 'Bạch trà', image: 'https://picsum.photos/seed/cat1/600/800', count: 12 },
@@ -74,6 +18,33 @@ const CATEGORIES = [
 ];
 
 export default function Home() {
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFeaturedProducts = async () => {
+      try {
+        const q = query(
+          collection(db, 'products'),
+          orderBy('rating', 'desc'),
+          limit(5)
+        );
+        const querySnapshot = await getDocs(q);
+        const products = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        })) as Product[];
+        setFeaturedProducts(products);
+      } catch (error) {
+        console.error("Error fetching featured products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFeaturedProducts();
+  }, []);
+
   return (
     <div className="min-h-screen bg-[#fcfbf7]">
       <Header />
@@ -206,9 +177,24 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
-            {MOCK_PRODUCTS.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+            {loading ? (
+              [...Array(5)].map((_, i) => (
+                <div key={i} className="aspect-[3/4] rounded-3xl bg-white/50 animate-pulse" />
+              ))
+            ) : (
+              featuredProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))
+            )}
+          </div>
+          
+          <div className="text-center">
+            <Link
+              to="/shop"
+              className="inline-flex items-center gap-2 text-[#1f3d2b] font-bold border-b-2 border-[#1f3d2b] pb-1 hover:opacity-70 transition-opacity"
+            >
+              Xem tất cả sản phẩm <ArrowRight size={18} />
+            </Link>
           </div>
         </div>
       </section>

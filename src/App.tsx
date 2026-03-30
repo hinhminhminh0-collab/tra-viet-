@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Toaster } from 'sonner';
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
@@ -14,8 +15,13 @@ import Checkout from './pages/Checkout';
 import AdminOrders from './pages/AdminOrders';
 import Profile from './pages/Profile';
 import Wishlist from './pages/Wishlist';
+import { seedProducts } from './lib/seed';
 
 export default function App() {
+  useEffect(() => {
+    seedProducts();
+  }, []);
+
   return (
     <AuthProvider>
       <CartProvider>

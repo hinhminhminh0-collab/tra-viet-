@@ -183,7 +183,7 @@ export default function ProductDetail() {
               <Leaf className="text-[#1f3d2b]" size={20} />
               <div>
                 <p className="text-[10px] uppercase tracking-widest text-gray-400 font-bold">Hương vị</p>
-                <p className="text-sm font-bold text-[#1f3d2b]">{product.taste.split(',')[0]}</p>
+                <p className="text-sm font-bold text-[#1f3d2b]">{product.taste?.split(',')[0] || 'Đang cập nhật'}</p>
               </div>
             </div>
           </div>
@@ -286,7 +286,7 @@ export default function ProductDetail() {
                       <div className="text-center p-4 rounded-2xl bg-white border border-gray-100">
                         <Thermometer className="mx-auto text-[#1f3d2b] mb-2" size={24} />
                         <p className="text-[10px] font-bold text-gray-400 uppercase">Nhiệt độ</p>
-                        <p className="text-sm font-bold text-[#1f3d2b]">{product.brewingGuide.match(/\d+ độ C/)?.[0] || '90°C'}</p>
+                        <p className="text-sm font-bold text-[#1f3d2b]">{product.brewingGuide?.match(/\d+ độ C/)?.[0] || '90°C'}</p>
                       </div>
                       <div className="text-center p-4 rounded-2xl bg-white border border-gray-100">
                         <Clock className="mx-auto text-[#1f3d2b] mb-2" size={24} />
@@ -300,7 +300,7 @@ export default function ProductDetail() {
                       </div>
                     </div>
                     <p className="text-gray-600 leading-relaxed italic">
-                      "{product.brewingGuide}"
+                      "{product.brewingGuide || 'Đang cập nhật hướng dẫn pha trà.'}"
                     </p>
                   </motion.div>
                 )}
